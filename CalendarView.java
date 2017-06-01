@@ -1,5 +1,10 @@
+
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -7,6 +12,7 @@ import javax.swing.border.Border;
 public class CalendarView 
 {
 	public static void main(String[] args) {
+	Hashtable<String, Integer> monthList = makeMonthList();
 	JFrame eventFrame = new JFrame("Event Box");
 	eventFrame.setSize(550, 300);
 	
@@ -14,7 +20,6 @@ public class CalendarView
 	Font contentFont = new Font("SanSerif", Font.BOLD, 16);
 	JPanel descPanel = new JPanel();
 	JPanel datePanel = new JPanel();
-	JPanel endDatePanel = new JPanel();
 	JPanel colorPanel = new JPanel();
 	
 	//create save button and modified its look
@@ -59,8 +64,29 @@ public class CalendarView
 	// add components in start Date area and put it below description section
 	datePanel.add(dateLabel);
 	datePanel.add(createYearBox());
-	datePanel.add(createMonthBox());
-	datePanel.add(createDayBox());
+	JComboBox monthBox = createMonthBox();
+	datePanel.add(monthBox);	
+	JComboBox dayBox = createDayBox();
+	datePanel.add(dayBox);
+	
+	// Adjust the maximum of the days according to the input from month seciton
+	monthBox.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent e) 
+		{
+			String selectedMonth = (String) monthBox.getSelectedItem(); // read input from the month section
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
+			int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+			dayBox.removeAllItems();
+			for(int i = 1; i <= maxDayOfMonth; i++)
+			{
+				dayBox.addItem(i);
+			}
+			datePanel.repaint();
+		}		
+	});
+	
 	datePanel.add(createTimeBox());
 	JRadioButton amButton = new JRadioButton("A.M.");
 	amButton.setFont(contentFont);
@@ -94,6 +120,24 @@ public class CalendarView
 	eventFrame.add(box);
 	eventFrame.setVisible(true);
 	eventFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	public static Hashtable<String,Integer> makeMonthList()
+	{
+		Hashtable<String,Integer> ht = new Hashtable<>();
+		ht.put("January", 1);
+		ht.put("February", 2);
+		ht.put("March", 3);
+		ht.put("April", 4);
+		ht.put("May", 5);
+		ht.put("June", 6);
+		ht.put("July", 7);
+		ht.put("August", 8);
+		ht.put("September", 9);
+		ht.put("October", 10);
+		ht.put("November", 11);
+		ht.put("December", 12);
+		return ht;
 	}
 	
 	/*
@@ -157,13 +201,21 @@ public static JComboBox createTimeBox()
 	JComboBox timeBox = new JComboBox();
 	String[] minutesList = {"00","15","30","45"};
 	timeBox.setFont(new Font("Sanserif", Font.BOLD, 16));
-	for(int i = 1; i <= 12; i++)
+	for(int i = 0; i <= 11; i++)
 	{
 		for(int j = 0; j < 4; j++)
 		{
-			timeBox.addItem(i + ":" + minutesList[j]);
+			if(i == 0)
+			{
+				timeBox.addItem("12:" + minutesList[j]);
+			}
+			else
+			{
+				timeBox.addItem(i + ":" + minutesList[j]);
+			}
 		}
 	}
 	return timeBox;
 }
 }
+
