@@ -1,5 +1,3 @@
-
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Calendar;
@@ -14,12 +12,13 @@ public class CalendarView
 	public static void main(String[] args) {
 	Hashtable<String, Integer> monthList = makeMonthList();
 	JFrame eventFrame = new JFrame("Event Box");
-	eventFrame.setSize(550, 300);
+	eventFrame.setSize(630, 300);
 	
 	Font labelFont = new Font("SanSerif", Font.BOLD, 20);
 	Font contentFont = new Font("SanSerif", Font.BOLD, 16);
 	JPanel descPanel = new JPanel();
-	JPanel datePanel = new JPanel();
+	JPanel startDatePanel = new JPanel();
+	JPanel endDatePanel = new JPanel();
 	JPanel colorPanel = new JPanel();
 	
 	//create save button and modified its look
@@ -47,8 +46,10 @@ public class CalendarView
 	descLabel.setFont(labelFont);
 	
 	//add labels and set its fonts.
-	JLabel dateLabel = new JLabel("Date: ");
-	dateLabel.setFont(labelFont);
+	JLabel startDateLabel = new JLabel("Start Time: ");
+	JLabel endDateLabel = new JLabel("End Time: ");
+	startDateLabel.setFont(labelFont);
+	endDateLabel.setFont(labelFont);
 	JTextField descText = new JTextField(20);
 	descText.setFont(new Font("SansSerif", Font.PLAIN, 16));
 	JLabel colorLabel = new JLabel("Color: ");
@@ -62,49 +63,92 @@ public class CalendarView
 	box.createVerticalStrut(100);
 	
 	// add components in start Date area and put it below description section
-	datePanel.add(dateLabel);
-	datePanel.add(createYearBox());
-	JComboBox monthBox = createMonthBox();
-	datePanel.add(monthBox);	
-	JComboBox dayBox = createDayBox();
-	datePanel.add(dayBox);
+	startDatePanel.add(startDateLabel);
+	startDatePanel.add(createYearBox());
+	JComboBox startMonthBox = createMonthBox();
+	startDatePanel.add(startMonthBox);
+	JComboBox startDayBox = createDayBox();
+	startDatePanel.add(startDayBox);
 	
-	// Adjust the maximum of the days according to the input from month seciton
-	monthBox.addActionListener(new ActionListener()
+	// add components in end Date area and put it below start date section
+	endDatePanel.add(endDateLabel);
+	endDatePanel.add(createYearBox());
+	JComboBox endMonthBox = createMonthBox();
+	endDatePanel.add(endMonthBox);	
+	JComboBox endDayBox = createDayBox();
+	endDatePanel.add(endDayBox);
+	
+	// In start day section, adjust the maximum of the days according to the input from month section
+	startMonthBox.addActionListener(new ActionListener()
 	{
 		public void actionPerformed(ActionEvent e) 
 		{
-			String selectedMonth = (String) monthBox.getSelectedItem(); // read input from the month section
+			String selectedMonth = (String) startMonthBox.getSelectedItem(); // read input from the month section
 			Calendar c = Calendar.getInstance();
 			c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
 			int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-			dayBox.removeAllItems();
+			startDayBox.removeAllItems();
 			for(int i = 1; i <= maxDayOfMonth; i++)
 			{
-				dayBox.addItem(i);
+				startDayBox.addItem(i);
 			}
-			datePanel.repaint();
+			startDatePanel.repaint();
 		}		
 	});
 	
-	datePanel.add(createTimeBox());
-	JRadioButton amButton = new JRadioButton("A.M.");
-	amButton.setFont(contentFont);
-	JRadioButton pmButton = new JRadioButton("P.M.");
-	pmButton.setFont(contentFont);
+	// In end day section, adjust the maximum of the days according to the input from month section
+	endMonthBox.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent e) 
+		{
+			String selectedMonth = (String) endMonthBox.getSelectedItem(); // read input from the month section
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
+			int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+			endDayBox.removeAllItems();
+			for(int i = 1; i <= maxDayOfMonth; i++)
+			{
+				endDayBox.addItem(i);
+			}
+			endDatePanel.repaint();
+		}		
+	});
+	
+	startDatePanel.add(createTimeBox());
+	endDatePanel.add(createTimeBox());
+	
+	//create Raio button for AM and PM options
+	JRadioButton startDateAM = new JRadioButton("A.M.");
+	startDateAM.setFont(contentFont);
+	JRadioButton startDatePM = new JRadioButton("P.M.");
+	startDatePM.setFont(contentFont);
+	JRadioButton endDateAM = new JRadioButton("A.M.");
+	endDateAM.setFont(contentFont);
+	JRadioButton endDatePM = new JRadioButton("P.M.");
+	endDatePM.setFont(contentFont);
 	
 	//adding radio button in a group
-	ButtonGroup g = new ButtonGroup();
-	g.add(amButton);
-	g.add(pmButton);
+	ButtonGroup startGroup = new ButtonGroup();
+	startGroup.add(startDateAM);
+	startGroup.add(startDatePM);
 	
+	ButtonGroup endGroup = new ButtonGroup();
+	endGroup.add(endDateAM);
+	endGroup.add(endDatePM);
 	
-	datePanel.add(amButton);
-	datePanel.add(pmButton);
-	box.add(datePanel);
+	startDatePanel.add(startDateAM);
+	startDatePanel.add(startDatePM);
+	endDatePanel.add(endDateAM);
+	endDatePanel.add(endDatePM);
+	
+	box.add(startDatePanel);
 	box.createVerticalStrut(70);
 	
-//  add components in color area and put it below end date section
+	box.add(endDatePanel);
+	box.createVerticalStrut(50);
+
+	
+	//  add components in color area and put it below end date section
 	colorPanel.add(colorLabel);
 	colorPanel.add(createColorBox());
 	box.add(colorPanel);
