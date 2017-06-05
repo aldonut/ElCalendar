@@ -12,13 +12,14 @@ public class CalendarView
 	public static void main(String[] args) {
 	Hashtable<String, Integer> monthList = makeMonthList();
 	JFrame eventFrame = new JFrame("Event Box");
-	eventFrame.setSize(630, 300);
+	eventFrame.setSize(600, 450);
 	
 	Font labelFont = new Font("SanSerif", Font.BOLD, 20);
 	Font contentFont = new Font("SanSerif", Font.BOLD, 16);
 	JPanel descPanel = new JPanel();
-	JPanel startDatePanel = new JPanel();
-	JPanel endDatePanel = new JPanel();
+	JPanel datePanel = new JPanel();
+	JPanel startTimePanel = new JPanel();
+	JPanel endTimePanel = new JPanel();
 	JPanel colorPanel = new JPanel();
 	
 	//create save button and modified its look
@@ -46,105 +47,138 @@ public class CalendarView
 	descLabel.setFont(labelFont);
 	
 	//add labels and set its fonts.
-	JLabel startDateLabel = new JLabel("Start Time: ");
-	JLabel endDateLabel = new JLabel("End Time: ");
-	startDateLabel.setFont(labelFont);
-	endDateLabel.setFont(labelFont);
+	JLabel dateLabel = new JLabel("Date: ");
+	JLabel startTimeLabel = new JLabel("Start Time:");
+	JLabel endTimeLabel = new JLabel("End Time: ");
+	dateLabel.setFont(labelFont);
+	startTimeLabel.setFont(labelFont);
+	endTimeLabel.setFont(labelFont);
 	JTextField descText = new JTextField(20);
 	descText.setFont(new Font("SansSerif", Font.PLAIN, 16));
 	JLabel colorLabel = new JLabel("Color: ");
 	colorLabel.setFont(labelFont);
 	
 	
-	// add stuff in description area and put it into the top of the window
+	// add components in description section and put it into the top of the window
 	descPanel.add(descLabel);
 	descPanel.add(descText);
 	box.add(descPanel);
+	
+	//add components in date section
+	datePanel.add(dateLabel);
+	datePanel.add(createYearBox());
+	JComboBox monthBox = createMonthBox();
+	datePanel.add(monthBox);
+	JComboBox dayBox = createDayBox();
+	datePanel.add(dayBox);
 	box.createVerticalStrut(100);
 	
 	// add components in start Date area and put it below description section
-	startDatePanel.add(startDateLabel);
-	startDatePanel.add(createYearBox());
-	JComboBox startMonthBox = createMonthBox();
-	startDatePanel.add(startMonthBox);
-	JComboBox startDayBox = createDayBox();
-	startDatePanel.add(startDayBox);
+//	startDatePanel.add(startDateLabel);
+//	startDatePanel.add(createYearBox());
+//	JComboBox startMonthBox = createMonthBox();
+//	startDatePanel.add(startMonthBox);
+//	JComboBox startDayBox = createDayBox();
+//	startDatePanel.add(startDayBox);
 	
-	// add components in end Date area and put it below start date section
-	endDatePanel.add(endDateLabel);
-	endDatePanel.add(createYearBox());
-	JComboBox endMonthBox = createMonthBox();
-	endDatePanel.add(endMonthBox);	
-	JComboBox endDayBox = createDayBox();
-	endDatePanel.add(endDayBox);
+//	 add components in end Date area and put it below start date section
+//	endDatePanel.add(endDateLabel);
+//	endDatePanel.add(createYearBox());
+//	JComboBox endMonthBox = createMonthBox();
+//	endDatePanel.add(endMonthBox);	
+//	JComboBox endDayBox = createDayBox();
+//	endDatePanel.add(endDayBox);
 	
 	// In start day section, adjust the maximum of the days according to the input from month section
-	startMonthBox.addActionListener(new ActionListener()
+	monthBox.addActionListener(new ActionListener()
 	{
 		public void actionPerformed(ActionEvent e) 
 		{
-			String selectedMonth = (String) startMonthBox.getSelectedItem(); // read input from the month section
+			String selectedMonth = (String) monthBox.getSelectedItem(); // read input from the month section
 			Calendar c = Calendar.getInstance();
 			c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
 			int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-			startDayBox.removeAllItems();
+			dayBox.removeAllItems();
 			for(int i = 1; i <= maxDayOfMonth; i++)
 			{
-				startDayBox.addItem(i);
+				dayBox.addItem(i);
 			}
-			startDatePanel.repaint();
+			datePanel.repaint();
 		}		
 	});
 	
 	// In end day section, adjust the maximum of the days according to the input from month section
-	endMonthBox.addActionListener(new ActionListener()
-	{
-		public void actionPerformed(ActionEvent e) 
-		{
-			String selectedMonth = (String) endMonthBox.getSelectedItem(); // read input from the month section
-			Calendar c = Calendar.getInstance();
-			c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
-			int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-			endDayBox.removeAllItems();
-			for(int i = 1; i <= maxDayOfMonth; i++)
-			{
-				endDayBox.addItem(i);
-			}
-			endDatePanel.repaint();
-		}		
-	});
+//	endMonthBox.addActionListener(new ActionListener()
+//	{
+//		public void actionPerformed(ActionEvent e) 
+//		{
+//			String selectedMonth = (String) endMonthBox.getSelectedItem(); // read input from the month section
+//			Calendar c = Calendar.getInstance();
+//			c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
+//			int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+//			endDayBox.removeAllItems();
+//			for(int i = 1; i <= maxDayOfMonth; i++)
+//			{
+//				endDayBox.addItem(i);
+//			}
+//			endDatePanel.repaint();
+//		}		
+//	});
 	
-	startDatePanel.add(createTimeBox());
-	endDatePanel.add(createTimeBox());
+	startTimePanel.add(startTimeLabel);
+	JComboBox startTime = createTimeBox();
+	startTimePanel.add(startTime);
+	endTimePanel.add(endTimeLabel);
+	JComboBox endTime = createTimeBox();
+	endTimePanel.add(endTime);
 	
-	//create Raio button for AM and PM options
-	JRadioButton startDateAM = new JRadioButton("A.M.");
-	startDateAM.setFont(contentFont);
-	JRadioButton startDatePM = new JRadioButton("P.M.");
-	startDatePM.setFont(contentFont);
-	JRadioButton endDateAM = new JRadioButton("A.M.");
-	endDateAM.setFont(contentFont);
-	JRadioButton endDatePM = new JRadioButton("P.M.");
-	endDatePM.setFont(contentFont);
+	//create radio button for AM and PM options
+	JRadioButton startTimeAM = new JRadioButton("A.M.");
+	startTimeAM.setFont(contentFont);
+	JRadioButton startTimePM = new JRadioButton("P.M.");
+	startTimePM.setFont(contentFont);
+	JRadioButton endTimeAM = new JRadioButton("A.M.");
+	endTimeAM.setFont(contentFont);
+	JRadioButton endTimePM = new JRadioButton("P.M.");
+	endTimePM.setFont(contentFont);
 	
 	//adding radio button in a group
 	ButtonGroup startGroup = new ButtonGroup();
-	startGroup.add(startDateAM);
-	startGroup.add(startDatePM);
+	startGroup.add(startTimeAM);
+	startGroup.add(startTimePM);
 	
 	ButtonGroup endGroup = new ButtonGroup();
-	endGroup.add(endDateAM);
-	endGroup.add(endDatePM);
+	endGroup.add(endTimeAM);
+	endGroup.add(endTimePM);
 	
-	startDatePanel.add(startDateAM);
-	startDatePanel.add(startDatePM);
-	endDatePanel.add(endDateAM);
-	endDatePanel.add(endDatePM);
+	startTimePanel.add(startTimeAM);
+	startTimePanel.add(startTimePM);
+	endTimePanel.add(endTimeAM);
+	endTimePanel.add(endTimePM);
 	
-	box.add(startDatePanel);
+	//Make a checkbox to check if an event lasts all day
+	JCheckBox allDayCheck = new JCheckBox("All Day");
+	allDayCheck.setFont(contentFont);
+	datePanel.add(allDayCheck);
+	allDayCheck.addItemListener(new ItemListener()
+	{
+		public void itemStateChanged(ItemEvent arg0) 
+		{
+			startTime.setEnabled(!allDayCheck.isSelected());
+			endTime.setEnabled(!allDayCheck.isSelected());
+			startTimeAM.setEnabled(!allDayCheck.isSelected());
+			startTimePM.setEnabled(!allDayCheck.isSelected());
+			endTimeAM.setEnabled(!allDayCheck.isSelected());
+			endTimePM.setEnabled(!allDayCheck.isSelected());
+		}		
+	});
+	
+	box.add(datePanel);
+	
+	box.add(startTimePanel);
 	box.createVerticalStrut(70);
 	
-	box.add(endDatePanel);
+	box.add(endTimePanel);
 	box.createVerticalStrut(50);
 
 	
