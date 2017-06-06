@@ -171,8 +171,8 @@ public class Model
 	 * @throws IOException throws parseExceptions
 	 */
 	
-	public void addEvent(String year, String month, String day, String startTime, 
-		String endTime, String description, String startTod, String endTod)
+	public void addEvent(int year, int month, int day, int startTime, 
+		int endTime, String description, String startTod, String endTod)
 	{
 	
 		Event eventToAdd = new Event(year, month, day, startTime, 
