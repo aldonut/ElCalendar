@@ -92,6 +92,14 @@ public class Event implements Comparable<Event>
 
 		return thisTime - otherTime;
 	}
+
+	public void allDay()
+	{
+		startTime = 1200;
+		endTime = 1145;
+		startTod = "am";
+		endTod = "pm";
+	}
 	/**
 	 * 
 	 * @return string rep of start time 
