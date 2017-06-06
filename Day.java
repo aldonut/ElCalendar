@@ -1,3 +1,4 @@
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import javax.swing.Icon;
  */
 public class Day implements Comparable<Day>
 {
-	private String day;
+	private String date;
 	private ArrayList<Event> events;
 	private int eventCount = 0;
 	private int[] arrDate = new int[3];
@@ -25,10 +26,10 @@ public class Day implements Comparable<Day>
 	 * 
 	 * @param day string representation of current day
 	 */
-	public Day(String day)
+	public Day(String date)
 	{
 		events = new ArrayList<>();
-		this.day = day;
+		this.date = date;
 		setArrDate();
 	}
 	
@@ -40,7 +41,7 @@ public class Day implements Comparable<Day>
 	 */
 	public String getDate()
 	{
-		return day;
+		return date;
 	}
 	
 	/**
@@ -124,9 +125,9 @@ public class Day implements Comparable<Day>
 	 */
 	public void setArrDate()
 	{
-		String strMonth = day.substring(0, 2);
-		String strDay = day.substring(3, 5);
-		String strYear = day.substring(6, 10);
+		String strMonth = date.substring(0, 2);
+		String strDay = date.substring(3, 5);
+		String strYear = date.substring(6, 10);
 				
 		int intMonth = Integer.parseInt(strMonth);
 		int intDay = Integer.parseInt(strDay);
@@ -171,7 +172,7 @@ public class Day implements Comparable<Day>
 	 */
 	public String toString()
 	{
-		return day;
+		return date;
 	}
 	
      /**

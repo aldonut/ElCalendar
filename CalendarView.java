@@ -10,6 +10,13 @@ import javax.swing.border.Border;
 
 public class CalendarView 
 {
+	Model m;
+	
+	public CalendarView()
+	{
+		m = new Model();
+	}
+	
 	public void createWindow()
 	{
 	Hashtable<String, Integer> monthList = makeMonthList();
@@ -167,7 +174,7 @@ public class CalendarView
 		public void actionPerformed(ActionEvent event) 
 		{
 			//check if there is any error like leaving description blank or didn't choose between AM and PM for start time or end time
-			if(descText.getText().equals("") || !startTimeAM.isSelected() && !startTimePM.isSelected() || !endTimeAM.isSelected() && !endTimePM.isSelected())
+			if(descText.getText().equals("") || !startTimeAM.isSelected() && !startTimePM.isSelected() && !allDayCheck.isSelected() || !endTimeAM.isSelected() && !endTimePM.isSelected() && !allDayCheck.isSelected())
 			{
 				//Construct a basic error message window
 				JFrame errorFrame = new JFrame("Error");
@@ -211,6 +218,7 @@ public class CalendarView
 				errorFrame.add(errorPanel);
 				errorPanel.add(OkButton);
 				errorFrame.setVisible(true);
+				errorFrame.setLocation(80,150);
 				return;
 			}
 			
@@ -220,43 +228,51 @@ public class CalendarView
 			int intMonth = monthList.get(strMonth);
 			int day = (int) dayBox.getSelectedItem();
 			String strStartTime = (String) startTime.getSelectedItem();
+			int intStartTime = Integer.valueOf(strStartTime.substring(0, 2)) * 100 + Integer.valueOf(strStartTime.substring(3, 5));
 			String strEndTime = (String) endTime.getSelectedItem();
+			int intEndTime = Integer.valueOf(strEndTime.substring(0, 2)) * 100 + Integer.valueOf(strEndTime.substring(3, 5));
 			
-			if(strStartTime.substring(0,2).equals("12") && startTimeAM.isSelected())
-				strStartTime = "00" + strStartTime.substring(2,5);
-			else if(strEndTime.substring(0,2).equals("12") && endTimeAM.isSelected())
-				strEndTime = "00" + strStartTime.substring(2,5);
-			if(startTimePM.isSelected())
-			{
-				int intStartTime = Integer.valueOf(strStartTime.substring(0, 2));
-				intStartTime = intStartTime + 12;
-				strStartTime = String.valueOf(intStartTime) + strStartTime.substring(2,5);
-			}
-			
-
-			if(endTimePM.isSelected())
-			{
-				int intEndTime = Integer.valueOf(strEndTime.substring(0, 2));
-				intEndTime = intEndTime + 12;
-				strEndTime = String.valueOf(intEndTime) + strEndTime.substring(2,5);
-			}
-
-			
-//			String startTod = "";
-//			if(startTimeAM.isSelected())
-//				startTod = startTimeAM.getText();
-//			else
-//				startTod = startTimePM.getText();
+//			if(strStartTime.substring(0,2).equals("12") && startTimeAM.isSelected())
+//				strStartTime = "00" + strStartTime.substring(2,5);
+//			else if(strEndTime.substring(0,2).equals("12") && endTimeAM.isSelected())
+//				strEndTime = "00" + strStartTime.substring(2,5);
+//			if(startTimePM.isSelected())
+//			{
+//				int intStartTime = Integer.valueOf(strStartTime.substring(0, 2));
+//				intStartTime = intStartTime + 12;
+//				strStartTime = String.valueOf(intStartTime) + strStartTime.substring(2,5);
+//			}
 //			
-//			String endTod = "";
-//			if(endTimeAM.isSelected())
-//				endTod = endTimeAM.getText();
-//			else
-//				endTod = endTimePM.getText();
-						
-			System.out.println(intMonth + "/" + day + "/" + year + "  " + strStartTime + " - " + strEndTime + "    " + description);
-//			Event e = new Event(year, month, day, startTime, endTime, description, tod)
+//			if(endTimePM.isSelected())
+//			{
+//				int intEndTime = Integer.valueOf(strEndTime.substring(0, 2));
+//				intEndTime = intEndTime + 12;
+//				strEndTime = String.valueOf(intEndTime) + strEndTime.substring(2,5);
+//			}
+
 			
+			String startTod = "";
+			if(startTimeAM.isSelected())
+				startTod = startTimeAM.getText();
+			else
+				startTod = startTimePM.getText();
+			
+			String endTod = "";
+			if(endTimeAM.isSelected())
+				endTod = endTimeAM.getText();
+			else
+				endTod = endTimePM.getText();
+						
+//			System.out.println(intMonth + "/" + day + "/" + year + "  " + intStartTime + " " + startTod + " - " + intEndTime + " " + endTod + "    " + description);
+			m.addEvent(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod);
+		System.out.println("There is(are) " + m.getDaysArr().size() + " events in database(model): ");
+		for(int i  = 0; i < m.getDaysArr().size(); i++)
+		{
+			for(int j = 0; j < m.getDaysArr().get(i).getEventsArr().size(); j++)
+			System.out.print(m.getDaysArr().get(i) + "   ");
+			m.getDaysArr().get(i).returnEventList();
+		}
+		
 		}
 		
 	});

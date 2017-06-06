@@ -171,12 +171,9 @@ public class Model
 	 * @throws IOException throws parseExceptions
 	 */
 	
-	public void addEvent(String year, String month, String day, String startTime, 
-		String endTime, String description, String startTod, String endTod)
+	public void addEvent(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod)
 	{
-	
-		Event eventToAdd = new Event(year, month, day, startTime, 
-							         endTime, description, startTod, endTod);
+		Event eventToAdd = new Event(year, month, day, startTime, endTime, description, startTod, endTod);
 		String eventDate = eventToAdd.getStrDate();
 		Day eventDay = null;
 		if(dayAlreadyExists(eventDate))
@@ -188,7 +185,7 @@ public class Model
 		{
 			eventDay = new Day(eventDate);
 			eventDay.addEvent(eventToAdd);
-			addNewDay(eventDay);
+//			addNewDay(eventDay);           (I think it adds twice becase of this line.)
 		}
 		
 		usedDays.add(eventDay);

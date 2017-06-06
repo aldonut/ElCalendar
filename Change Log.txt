@@ -1,0 +1,6 @@
+06/05/2017 11:56 PM
+- I roughly combine model and front end together (kind of)
+- Change from military time to regular time
+- Adjust error message to center of the window
+- Change the way of printing event in toString() method in Event class
+- Add system.out.println at CalendarView class to test if the event is successfully added into the calendar model.
