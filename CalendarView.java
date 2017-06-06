@@ -3,13 +3,15 @@ import java.awt.event.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
 public class CalendarView 
 {
-	public static void main(String[] args) {
+	public void createWindow()
+	{
 	Hashtable<String, Integer> monthList = makeMonthList();
 	JFrame eventFrame = new JFrame("Event Box");
 	eventFrame.setSize(600, 450);
@@ -21,25 +23,6 @@ public class CalendarView
 	JPanel startTimePanel = new JPanel();
 	JPanel endTimePanel = new JPanel();
 	JPanel colorPanel = new JPanel();
-	
-	//create save button and modified its look
-	JButton saveButton = new JButton("Save");
-	saveButton.setBackground(new Color(50,205,50));
-	saveButton.setForeground(Color.WHITE);
-	saveButton.setFont(contentFont);
-	
-	//create cancel button and modified its look
-	JButton cancelButton = new JButton("Cancel");
-	cancelButton.setBackground(new Color(255,60,60));
-	cancelButton.setForeground(Color.WHITE);
-	cancelButton.setFont(contentFont);
-	cancelButton.addActionListener(new ActionListener()
-	{
-		public void actionPerformed(ActionEvent event) 
-		{
-			eventFrame.dispose();
-		}
-	});
 	
 	//implement box layout
 	Box box = Box.createVerticalBox();
@@ -66,7 +49,8 @@ public class CalendarView
 	
 	//add components in date section
 	datePanel.add(dateLabel);
-	datePanel.add(createYearBox());
+	JComboBox yearBox = createYearBox();
+	datePanel.add(yearBox);
 	JComboBox monthBox = createMonthBox();
 	datePanel.add(monthBox);
 	JComboBox dayBox = createDayBox();
@@ -171,6 +155,123 @@ public class CalendarView
 			endTimeAM.setEnabled(!allDayCheck.isSelected());
 			endTimePM.setEnabled(!allDayCheck.isSelected());
 		}		
+	});
+	
+	//create save button and make it functional
+	JButton saveButton = new JButton("Save");
+	saveButton.setBackground(new Color(50,205,50));
+	saveButton.setForeground(Color.WHITE);
+	saveButton.setFont(contentFont);
+	saveButton.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent event) 
+		{
+			//check if there is any error like leaving description blank or didn't choose between AM and PM for start time or end time
+			if(descText.getText().equals("") || !startTimeAM.isSelected() && !startTimePM.isSelected() || !endTimeAM.isSelected() && !endTimePM.isSelected())
+			{
+				//Construct a basic error message window
+				JFrame errorFrame = new JFrame("Error");
+				errorFrame.setSize(450,150);
+				JPanel errorPanel = new JPanel();
+					
+				JLabel imageLabel = new JLabel();
+				Image img = new ImageIcon(this.getClass().getResource("/error.png")).getImage();
+				imageLabel.setIcon(new ImageIcon(img));
+				errorPanel.add(imageLabel);
+				JLabel errorMessage = new JLabel("");
+				
+				//check which error it is to show different messages
+				if(descText.getText().equals(""))
+				{
+					errorMessage.setText("Description cannot be left blank.");
+				}
+				
+				else if(!startTimeAM.isSelected() && !startTimePM.isSelected())
+				{
+					errorMessage.setText("Start time should be either A.M. or P.M.");
+					errorFrame.setSize(550, 150);
+				}
+				
+				else if(!endTimeAM.isSelected() && !endTimePM.isSelected())
+				{
+					errorMessage.setText("End time should be either A.M. or P.M.");
+					errorFrame.setSize(550, 150);
+				}
+				
+				errorMessage.setFont(new Font("SanSerif", Font.BOLD, 24));
+				JButton OkButton = new JButton("OK");
+				OkButton.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e) 
+					{
+						errorFrame.dispose();			
+					}
+			});
+				errorPanel.add(errorMessage);
+				errorFrame.add(errorPanel);
+				errorPanel.add(OkButton);
+				errorFrame.setVisible(true);
+				return;
+			}
+			
+			String description = descText.getText();
+			int year = (int) yearBox.getSelectedItem();
+			String strMonth = (String) monthBox.getSelectedItem();
+			int intMonth = monthList.get(strMonth);
+			int day = (int) dayBox.getSelectedItem();
+			String strStartTime = (String) startTime.getSelectedItem();
+			String strEndTime = (String) endTime.getSelectedItem();
+			
+			if(strStartTime.substring(0,2).equals("12") && startTimeAM.isSelected())
+				strStartTime = "00" + strStartTime.substring(2,5);
+			else if(strEndTime.substring(0,2).equals("12") && endTimeAM.isSelected())
+				strEndTime = "00" + strStartTime.substring(2,5);
+			if(startTimePM.isSelected())
+			{
+				int intStartTime = Integer.valueOf(strStartTime.substring(0, 2));
+				intStartTime = intStartTime + 12;
+				strStartTime = String.valueOf(intStartTime) + strStartTime.substring(2,5);
+			}
+			
+
+			if(endTimePM.isSelected())
+			{
+				int intEndTime = Integer.valueOf(strEndTime.substring(0, 2));
+				intEndTime = intEndTime + 12;
+				strEndTime = String.valueOf(intEndTime) + strEndTime.substring(2,5);
+			}
+
+			
+//			String startTod = "";
+//			if(startTimeAM.isSelected())
+//				startTod = startTimeAM.getText();
+//			else
+//				startTod = startTimePM.getText();
+//			
+//			String endTod = "";
+//			if(endTimeAM.isSelected())
+//				endTod = endTimeAM.getText();
+//			else
+//				endTod = endTimePM.getText();
+						
+			System.out.println(intMonth + "/" + day + "/" + year + "  " + strStartTime + " - " + strEndTime + "    " + description);
+//			Event e = new Event(year, month, day, startTime, endTime, description, tod)
+			
+		}
+		
+	});
+	
+	//create cancel button and modified its look
+	JButton cancelButton = new JButton("Cancel");
+	cancelButton.setBackground(new Color(255,60,60));
+	cancelButton.setForeground(Color.WHITE);
+	cancelButton.setFont(contentFont);
+	cancelButton.addActionListener(new ActionListener()
+	{
+		public void actionPerformed(ActionEvent event) 
+		{
+			eventFrame.dispose();
+		}
 	});
 	
 	box.add(datePanel);
@@ -289,7 +390,10 @@ public static JComboBox createTimeBox()
 			}
 			else
 			{
-				timeBox.addItem(i + ":" + minutesList[j]);
+				if(i < 10)
+					timeBox.addItem("0" + i + ":" + minutesList[j]);
+				else
+					timeBox.addItem(i + ":" + minutesList[j]);
 			}
 		}
 	}
