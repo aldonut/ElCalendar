@@ -143,6 +143,10 @@ public class Event implements Comparable<Event>
     	this.tod = tod;
     }
 
+    public String getStrDate()
+    {
+    	return month + "/" + day + "/" + year;
+    }
 	/**
 	 * to string rep of the event
 	 */
