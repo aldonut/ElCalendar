@@ -172,11 +172,11 @@ public class Model
 	 */
 	
 	public void addEvent(String year, String month, String day, String startTime, 
-		String endTime, String description, String tod)
+		String endTime, String description, String startTod, String endTod)
 	{
 	
 		Event eventToAdd = new Event(year, month, day, startTime, 
-							         endTime, description, tod);
+							         endTime, description, startTod, endTod);
 		String eventDate = eventToAdd.getStrDate();
 		Day eventDay = null;
 		if(dayAlreadyExists(eventDate))

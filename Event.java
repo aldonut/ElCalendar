@@ -16,7 +16,8 @@ public class Event implements Comparable<Event>
 	private int year;
 	private int month;
 	private int day;
-	private String tod;
+	private String startTod;
+	private String endTod;
 
 	
 	
@@ -31,12 +32,12 @@ public class Event implements Comparable<Event>
 	 * @param tod the time of day 
 	 */
 	// I deleted the tod variable and changed year type, month type and day type from String to int (Richard)
-	public Event(int year, int month, int day, String startTime, 
-		String endTime, String description)
+	public Event(String year, String month, String day, String startTime, 
+		String endTime, String description, String startTod, String endTod)
 	{
-		this.year = year;
-		this.month = month;
-		this.day = day;
+		this.year = Integer.parseInt(year);
+		this.month = Integer.parseInt(month);
+		this.day = Integer.parseInt(day);
 		this.description = description;
 		this.startTime = Integer.parseInt(startTime);
 		this.endTime = Integer.parseInt(endTime);
@@ -53,7 +54,7 @@ public class Event implements Comparable<Event>
 	{
 		Event other = (Event)o;
 		
-		if(this.getTod().equals(other.getTod()))
+		if(this.getStartTod().equals(other.getStartTod()))
 		{
 			if(this.getStartTime() == other.getStartTime())
 			{
@@ -76,7 +77,7 @@ public class Event implements Comparable<Event>
 
 		else
 		{
-			return this.getTod().compareTo(o.getTod());
+			return this.getStartTod().compareTo(o.getStartTod());
 		}
 		
 	}
@@ -133,14 +134,24 @@ public class Event implements Comparable<Event>
 		description = text;
 	}
 	
-    public String getTod()
+    public String getStartTod()
     {
-    	return tod;
+    	return startTod;
     }
 
-    public void setTod(String tod)
+    public void setStartTod(String tod)
     {
-    	this.tod = tod;
+    	this.startTod = tod;
+    }
+
+    public String getendTod()
+    {
+    	return endTod;
+    }
+
+    public void setendTod(String tod)
+    {
+    	this.endTod = tod;
     }
 
     public String getStrDate()
