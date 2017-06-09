@@ -12,3 +12,7 @@
 - Functionalities for Next month and previous month is added into the calendar
 - create function is connected with main calendar interface
 - Position the number of the day on top-left corder of the cell
+
+06/09/2017 11:48 AM
+- If an event is created, it will show in the cell box of event day
+- Events will be shown in chosen color

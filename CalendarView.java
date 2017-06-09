@@ -19,8 +19,16 @@ public class CalendarView
 		calendarFrame.setSize(1400, 900);
 	}
 	
-	public void paintMonthView()
+	public void paintWeekView()
 	{
+		calendarFrame = new JFrame("Calendar (Week View)");
+		calendarFrame.setVisible(true);
+		calendarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		
+	}
+	public void paintMonthView()
+	{		
 		String[] months = {"January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"};
 		Font Sans18Bold = new Font("SansSerif", Font.BOLD, 18);
 		
@@ -67,9 +75,10 @@ public class CalendarView
 				paintMonthView();
 			}
 		});
-		monthAndYearPanel.add(monthAndYearLabel);
-		monthAndYearPanel.add(lastMonthButton);
-		monthAndYearPanel.add(nextMonthButton);
+		monthAndYearPanel.setLayout(new BorderLayout());
+		monthAndYearPanel.add(monthAndYearLabel,BorderLayout.CENTER);
+		monthAndYearPanel.add(lastMonthButton,BorderLayout.WEST);
+		monthAndYearPanel.add(nextMonthButton,BorderLayout.EAST);
 
 		String[] weekDay = {"Sunday", "Monday", "Tuesday", "Wednesday",  "Thursday", "     Friday" , "        Saturday"};
 		for(int i = 0; i < weekDay.length; i++)
@@ -85,6 +94,7 @@ public class CalendarView
 				
 		Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
 		
+		// Make "Create" button and connect it to functional "create" method
 		JButton createButton = new JButton("Create");
 		createButton.setForeground(Color.WHITE);
 		createButton.setBackground(new Color(30,144,255));
@@ -105,6 +115,7 @@ public class CalendarView
 		calendarFrame.add(box, BorderLayout.NORTH);
 		calendarFrame.add(daysPanel, BorderLayout.CENTER);
 		calendarFrame.add(buttonPanel, BorderLayout.SOUTH);
+		calendarFrame.setLocationRelativeTo(null);
 		calendarFrame.setVisible(true);
 		calendarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -112,13 +123,22 @@ public class CalendarView
 	public JPanel paintDays()
 	{
 		JPanel daysPanel = new JPanel();
+		Color[] colorList = {new Color(220,20,60), new Color(65,105,225), new Color(0,206,209), new Color(148,0,211), new Color(255,140,0)};
 		int firstWeekDay = m.getMovedAroundCal().get(Calendar.DAY_OF_WEEK);
 		int daysInMonth = m.getMovedAroundCal().getActualMaximum(Calendar.DAY_OF_MONTH);
+		System.out.println(firstWeekDay);
 		
+		//Java Consider if first day of week is Saturday, its value will be 1.
+		//So it needs to be changed to 8 in order to make this algorithm works.
+		if(firstWeekDay == 1)
+		{
+			firstWeekDay = 8;
+		}
 		int day = 1;
 		while(day <= daysInMonth)
 		{
-			if(firstWeekDay - 1 > 0)
+			//print empty button to figure out what weekday it should start 
+			if(firstWeekDay - 2 > 0)
 			{
 				firstWeekDay--;
 				JButton b0 = new JButton("");
@@ -141,14 +161,35 @@ public class CalendarView
 					dayButton.setBackground(lightBlue);
 					dayButton.setForeground(Color.WHITE);
 				}
+				
+				int numOfAllEvents = m.getDaysArr().size();
+				if(numOfAllEvents > 0)
+				{
+					 Box box = Box.createVerticalBox();
+					for(int i = 0; i < numOfAllEvents; i++)
+					{
+						if(day == m.getDaysArr().get(i).getDay())
+						{
+							for(int j = 0; j < m.getDaysArr().get(i).getEventsArr().size(); j++)
+							{
+								JLabel eventPreview = new JLabel(m.getDaysArr().get(i).getEventsArr().get(j).getDescription());
+								eventPreview.setOpaque(true);
+								eventPreview.setBackground(colorList[m.getDaysArr().get(i).getEventsArr().get(j).getColor()]);
+								eventPreview.setForeground(Color.WHITE);
+								eventPreview.setFont(new Font("SansSerif", Font.BOLD, 16));
+								box.add(eventPreview);
+								dayButton.add(box);
+							}
+						}
+					}
+				}
 				dayButton.setFont(new Font("SansSerif", Font.BOLD, 18));
 				dayButton.setHorizontalAlignment(SwingConstants.LEFT);
 				dayButton.setVerticalAlignment(SwingConstants.TOP);
 				daysPanel.add(dayButton);
 				day++;
 			}
-		}
-		
+		}	
 		return daysPanel;
 	}
 	
@@ -310,6 +351,13 @@ public class CalendarView
 		}		
 	});
 	
+	
+	//  add components in color area and put it below end date section
+	colorPanel.add(colorLabel);
+	JComboBox colorBox = createColorBox();
+	colorPanel.add(colorBox);
+	
+	
 	//create save button and make it functional
 	JButton saveButton = new JButton("Save");
 	saveButton.setBackground(new Color(50,205,50));
@@ -363,8 +411,8 @@ public class CalendarView
 				errorPanel.add(errorMessage);
 				errorFrame.add(errorPanel);
 				errorPanel.add(OkButton);
+				errorFrame.setLocationRelativeTo(eventFrame);
 				errorFrame.setVisible(true);
-				errorFrame.setLocation(80,150);
 				return;
 			}
 			
@@ -378,6 +426,7 @@ public class CalendarView
 			int intStartTime = Integer.valueOf(strStartTime.substring(0, 2)) * 100 + Integer.valueOf(strStartTime.substring(3, 5));
 			String strEndTime = (String) endTime.getSelectedItem();
 			int intEndTime = Integer.valueOf(strEndTime.substring(0, 2)) * 100 + Integer.valueOf(strEndTime.substring(3, 5));
+			int color = (int) colorBox.getSelectedIndex();
 			
 //			if(strStartTime.substring(0,2).equals("12") && startTimeAM.isSelected())
 //				strStartTime = "00" + strStartTime.substring(2,5);
@@ -411,7 +460,13 @@ public class CalendarView
 				endTod = endTimePM.getText();
 						
 //			System.out.println(intMonth + "/" + day + "/" + year + "  " + intStartTime + " " + startTod + " - " + intEndTime + " " + endTod + "    " + description);
-			m.addEvent(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod);
+			m.addEvent(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod, color);
+			
+			// Repaint the calendar after an event is added
+			eventFrame.dispose();
+			calendarFrame.getContentPane().removeAll();
+			paintMonthView();
+			
 		System.out.println("There is(are) " + m.getDaysArr().size() + " events in database(model): ");
 		for(int i  = 0; i < m.getDaysArr().size(); i++)
 		{
@@ -443,10 +498,6 @@ public class CalendarView
 	
 	box.add(endTimePanel);
 
-	
-	//  add components in color area and put it below end date section
-	colorPanel.add(colorLabel);
-	colorPanel.add(createColorBox());
 	box.add(colorPanel);
 	
 	// add buttons in the bottom of the event box
@@ -457,6 +508,7 @@ public class CalendarView
 	box.add(buttonPanel);
 	
 	eventFrame.add(box);
+	eventFrame.setLocationRelativeTo(eventFrame);
 	eventFrame.setVisible(true);
 	}
 	
@@ -523,11 +575,11 @@ public static JComboBox createColorBox()
 {
 	JComboBox colorBox = new JComboBox();
 	colorBox.setFont(new Font("Sanserif", Font.BOLD, 16));
-	colorBox.addItem("RED");
-	colorBox.addItem("BLUE");
-	colorBox.addItem("GREY");
-	colorBox.addItem("PINK");
-	colorBox.addItem("ORANGE");
+	colorBox.addItem("Red");
+	colorBox.addItem("Blue");
+	colorBox.addItem("Green");
+	colorBox.addItem("Purple");
+	colorBox.addItem("Orange");
 	return colorBox;
 }
 

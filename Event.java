@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.text.ParseException;
 import java.util.Scanner;
 
@@ -18,6 +19,7 @@ public class Event implements Comparable<Event>
 	private int day;
 	private String startTod;
 	private String endTod;
+	private int color;
 
 	
 	
@@ -32,7 +34,7 @@ public class Event implements Comparable<Event>
 	 * @param tod the time of day 
 	 */
 	// I deleted the tod variable and changed year type, month type and day type from String to int (Richard)
-	public Event(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod)
+	public Event(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod, int color)
 	{
 		this.year = year;
 		this.month = month;
@@ -42,6 +44,7 @@ public class Event implements Comparable<Event>
 		this.endTime = endTime;
 		this.startTod = startTod;
 		this.endTod = endTod;
+		this.color = color;
 	}
 	
 
@@ -159,9 +162,9 @@ public class Event implements Comparable<Event>
     {
     	String strMonth = String.valueOf(month);
     	String strDay = String.valueOf(day);
-    	if(month < 9)
+    	if(month <= 9)
     		strMonth = "0" + strMonth;
-    	if(day < 9)
+    	if(day <= 9)
     		strDay = "0" + strDay;
     	return strMonth + "/" + strDay + "/" + year;
     }
@@ -181,7 +184,12 @@ public class Event implements Comparable<Event>
 		if(endMin.equals("0"))
 			endMin = "00";
 		String strEndTime = endHour + ":" + endMin + " " + endTod;
-		return description + "   " +  strStartTime + "  -  " + strEndTime;
+		return description + "   " +  strStartTime + "  -  " + strEndTime + color;
+	}
+	
+	public int getColor()
+	{
+		return color;
 	}
 
 	

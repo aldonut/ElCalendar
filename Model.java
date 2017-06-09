@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -171,9 +172,9 @@ public class Model
 	 * @throws IOException throws parseExceptions
 	 */
 	
-	public void addEvent(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod)
+	public void addEvent(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod, int color)
 	{
-		Event eventToAdd = new Event(year, month, day, startTime, endTime, description, startTod, endTod);
+		Event eventToAdd = new Event(year, month, day, startTime, endTime, description, startTod, endTod, color);
 		String eventDate = eventToAdd.getStrDate();
 		Day eventDay = null;
 		if(dayAlreadyExists(eventDate))
