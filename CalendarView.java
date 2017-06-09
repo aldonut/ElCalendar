@@ -1,23 +1,159 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
-import java.util.Map.Entry;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-
-public class CalendarView 
+/**
+ * 
+ * @author richard
+ */
+public class CalendarView
 {
-	Model m;
+	public Model m;
+	public JFrame calendarFrame;
 	
 	public CalendarView()
 	{
 		m = new Model();
+		calendarFrame = new JFrame("Calendar (Month View)");
+		calendarFrame.setSize(1400, 900);
 	}
 	
-	public void createWindow()
+	public void paintMonthView()
+	{
+		String[] months = {"January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"};
+		Font Sans18Bold = new Font("SansSerif", Font.BOLD, 18);
+		
+		JPanel weekDayPanel = new JPanel();
+		JPanel monthAndYearPanel = new JPanel();
+		JPanel daysPanel = new JPanel();
+		daysPanel = paintDays();
+		JPanel buttonPanel = new JPanel();
+		
+		
+		daysPanel.setLayout(new GridLayout(0, 7));
+		int intRecentYear = m.getMovedAroundCal().get(Calendar.YEAR);
+		String strRecentYear = String.valueOf(intRecentYear);
+		int intRecentMonth = m.getMovedAroundCal().get(Calendar.MONTH);
+		String strRecentMonth = months[intRecentMonth];
+		JLabel monthAndYearLabel = new JLabel(strRecentYear + "  " + strRecentMonth);
+		monthAndYearLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
+		JButton lastMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/last.png")).getImage()));
+		lastMonthButton.setOpaque(false);
+		lastMonthButton.setContentAreaFilled(false);
+		lastMonthButton.setBorderPainted(false);
+		lastMonthButton.setRolloverEnabled(true);
+		JButton nextMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/next.png")).getImage()));
+		nextMonthButton.setOpaque(false);
+		nextMonthButton.setContentAreaFilled(false);
+		nextMonthButton.setBorderPainted(false);
+		nextMonthButton.setRolloverEnabled(true);
+		lastMonthButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				m.prevMonth();
+				calendarFrame.getContentPane().removeAll();
+				paintMonthView();
+			}
+		});
+		
+		nextMonthButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				m.nextMonth();
+				calendarFrame.getContentPane().removeAll();
+				paintMonthView();
+			}
+		});
+		monthAndYearPanel.add(monthAndYearLabel);
+		monthAndYearPanel.add(lastMonthButton);
+		monthAndYearPanel.add(nextMonthButton);
+
+		String[] weekDay = {"Sunday", "Monday", "Tuesday", "Wednesday",  "Thursday", "     Friday" , "        Saturday"};
+		for(int i = 0; i < weekDay.length; i++)
+		{
+			JLabel weekDayLabel = new JLabel(weekDay[i]);
+			FlowLayout fl = new FlowLayout();
+			fl.setAlignment(FlowLayout.TRAILING);
+			fl.setHgap(100);
+			weekDayPanel.setLayout(fl);
+			weekDayLabel.setFont(Sans18Bold);
+			weekDayPanel.add(weekDayLabel);
+		}
+				
+		Font buttonFont = new Font("SansSerif", Font.BOLD, 16);
+		
+		JButton createButton = new JButton("Create");
+		createButton.setForeground(Color.WHITE);
+		createButton.setBackground(new Color(30,144,255));
+		createButton.setFont(buttonFont);;
+		createButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				createEventBox();
+			}
+		});
+		buttonPanel.add(createButton);
+		Box box = Box.createVerticalBox();
+		box.add(monthAndYearPanel);
+		box.add(weekDayPanel);
+		
+		
+		calendarFrame.add(box, BorderLayout.NORTH);
+		calendarFrame.add(daysPanel, BorderLayout.CENTER);
+		calendarFrame.add(buttonPanel, BorderLayout.SOUTH);
+		calendarFrame.setVisible(true);
+		calendarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	public JPanel paintDays()
+	{
+		JPanel daysPanel = new JPanel();
+		int firstWeekDay = m.getMovedAroundCal().get(Calendar.DAY_OF_WEEK);
+		int daysInMonth = m.getMovedAroundCal().getActualMaximum(Calendar.DAY_OF_MONTH);
+		
+		int day = 1;
+		while(day <= daysInMonth)
+		{
+			if(firstWeekDay - 1 > 0)
+			{
+				firstWeekDay--;
+				JButton b0 = new JButton("");
+				b0.setOpaque(false);
+				b0.setContentAreaFilled(false);
+				b0.setBorderPainted(false);
+				b0.setFont(new Font("SansSerif", Font.BOLD, 18));
+				daysPanel.add(b0);
+			}
+			else
+			{
+				JButton dayButton = new JButton(String.valueOf(day));
+				dayButton.setOpaque(false);
+				dayButton.setContentAreaFilled(false);
+				if(day == m.getLocalCal().get(Calendar.DAY_OF_MONTH) && m.getLocalCal().get(Calendar.MONTH) == m.getMovedAroundCal().get(Calendar.MONTH) &&m.getLocalCal().get(Calendar.YEAR) == m.getMovedAroundCal().get(Calendar.YEAR))
+				{
+					dayButton.setContentAreaFilled(true);
+					dayButton.setOpaque(true);
+					Color lightBlue = new Color(100,149,237);
+					dayButton.setBackground(lightBlue);
+					dayButton.setForeground(Color.WHITE);
+				}
+				dayButton.setFont(new Font("SansSerif", Font.BOLD, 18));
+				dayButton.setHorizontalAlignment(SwingConstants.LEFT);
+				dayButton.setVerticalAlignment(SwingConstants.TOP);
+				daysPanel.add(dayButton);
+				day++;
+			}
+		}
+		
+		return daysPanel;
+	}
+	
+	
+	public void createEventBox()
 	{
 	Hashtable<String, Integer> monthList = makeMonthList();
 	JFrame eventFrame = new JFrame("Event Box");
@@ -33,6 +169,8 @@ public class CalendarView
 	
 	//implement box layout
 	Box box = Box.createVerticalBox();
+	
+	
 	JLabel descLabel = new JLabel("Description: ");
 	descLabel.setFont(labelFont);
 	
@@ -55,16 +193,23 @@ public class CalendarView
 	box.add(descPanel);
 	
 	//add components in date section
-	datePanel.add(dateLabel);
 	JComboBox yearBox = createYearBox();
-	datePanel.add(yearBox);
 	JComboBox monthBox = createMonthBox();
+	JComboBox dayBox = new JComboBox();
+	datePanel.add(dateLabel);
+	datePanel.add(yearBox);
 	datePanel.add(monthBox);
-	JComboBox dayBox = createDayBox();
-	datePanel.add(dayBox);
-	box.createVerticalStrut(100);
+	monthBox.setSelectedIndex(m.getLocalCal().get(Calendar.MONTH));
+	Calendar temp = Calendar.getInstance();
+	temp.set(Calendar.MONTH, monthBox.getSelectedIndex() + 1);
+	for(int i = 0; i < temp.getActualMaximum(Calendar.DAY_OF_MONTH); i++)
+		dayBox.addItem(i);
 	
-	// add components in start Date area and put it below description section
+	dayBox.setFont(contentFont);
+	dayBox.setSelectedIndex(m.getLocalCal().get(Calendar.DAY_OF_MONTH));
+	datePanel.add(dayBox);
+	
+	// add components in start Date area and put it below description section (Not sure if it's needed but leave it there for future purpose)
 //	startDatePanel.add(startDateLabel);
 //	startDatePanel.add(createYearBox());
 //	JComboBox startMonthBox = createMonthBox();
@@ -86,7 +231,7 @@ public class CalendarView
 		public void actionPerformed(ActionEvent e) 
 		{
 			String selectedMonth = (String) monthBox.getSelectedItem(); // read input from the month section
-			Calendar c = Calendar.getInstance();
+			Calendar c = m.getMovedAroundCal();
 			c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
 			int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
 			dayBox.removeAllItems();
@@ -116,6 +261,7 @@ public class CalendarView
 //		}		
 //	});
 	
+	//Create combo box for start time and end time
 	startTimePanel.add(startTimeLabel);
 	JComboBox startTime = createTimeBox();
 	startTimePanel.add(startTime);
@@ -222,6 +368,7 @@ public class CalendarView
 				return;
 			}
 			
+			//read inputs and convert them into parameters that the Event constructor can take
 			String description = descText.getText();
 			int year = (int) yearBox.getSelectedItem();
 			String strMonth = (String) monthBox.getSelectedItem();
@@ -293,19 +440,16 @@ public class CalendarView
 	box.add(datePanel);
 	
 	box.add(startTimePanel);
-	box.createVerticalStrut(70);
 	
 	box.add(endTimePanel);
-	box.createVerticalStrut(50);
 
 	
 	//  add components in color area and put it below end date section
 	colorPanel.add(colorLabel);
 	colorPanel.add(createColorBox());
 	box.add(colorPanel);
-	box.createVerticalStrut(10);
 	
-	// add buttons in the buttom of the window
+	// add buttons in the bottom of the event box
 	JPanel buttonPanel = new JPanel();
 	buttonPanel.setLayout(new FlowLayout());
 	buttonPanel.add(saveButton);
@@ -314,9 +458,12 @@ public class CalendarView
 	
 	eventFrame.add(box);
 	eventFrame.setVisible(true);
-	eventFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	/**
+	 * Create a list of month in a form of Hashtable
+	 * @return the hashtable that contain String names of month and the matching number
+	 */
 	public static Hashtable<String,Integer> makeMonthList()
 	{
 		Hashtable<String,Integer> ht = new Hashtable<>();
@@ -335,8 +482,9 @@ public class CalendarView
 		return ht;
 	}
 	
-	/*
-	 * create drop down menu(combo box) for year
+	/**
+	 * creates drop down menu(combo box) for year
+	 * @return the ComboBox that identifies year
 	 */
 	public static JComboBox createYearBox()
 	{
@@ -350,8 +498,9 @@ public class CalendarView
 		}		
 		return yearBox;
 	}
-/*
+/**
 * create drop down menu(combo box) for month
+* @return the combo box that has all the names of month
 */
 public static JComboBox createMonthBox()
 {
@@ -362,23 +511,14 @@ public static JComboBox createMonthBox()
 	{
 		monthBox.addItem(months[i]);
 	}
+
 	return monthBox;
 }
 
-/*
- * create drop down menu(combo box) for day
+/**
+ * Color selection where provide users to be able to select their color of event text to differentiate the types of events.
+ * @return the Combo box for color selection
  */
-public static JComboBox createDayBox()
-{
-	JComboBox dayBox = new JComboBox();
-	dayBox.setFont(new Font("Sanserif", Font.BOLD, 16));
-	for(int i = 1; i < 32; i++)
-	{
-		dayBox.addItem(i);
-	}
-	return dayBox;
-}
-
 public static JComboBox createColorBox()
 {
 	JComboBox colorBox = new JComboBox();
@@ -391,6 +531,10 @@ public static JComboBox createColorBox()
 	return colorBox;
 }
 
+/**
+ * Create Time combo box use of start time and end time
+ * @return the combo box has differnet time period from hour 1 - 12 with minutes 00, 15, 30 and 45
+ */
 public static JComboBox createTimeBox()
 {
 	JComboBox timeBox = new JComboBox();

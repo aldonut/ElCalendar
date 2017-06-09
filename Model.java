@@ -171,12 +171,7 @@ public class Model
 	 * @throws IOException throws parseExceptions
 	 */
 	
-<<<<<<< HEAD
 	public void addEvent(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod)
-=======
-	public void addEvent(int year, int month, int day, int startTime, 
-		int endTime, String description, String startTod, String endTod)
->>>>>>> 9c90cbbacd196fbe9ece9d1b1e2474d4605b9052
 	{
 		Event eventToAdd = new Event(year, month, day, startTime, endTime, description, startTod, endTod);
 		String eventDate = eventToAdd.getStrDate();

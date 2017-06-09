@@ -32,12 +32,7 @@ public class Event implements Comparable<Event>
 	 * @param tod the time of day 
 	 */
 	// I deleted the tod variable and changed year type, month type and day type from String to int (Richard)
-<<<<<<< HEAD
 	public Event(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod)
-=======
-	public Event(int year, int month, int day, int startTime, 
-		int endTime, String description, String startTod, String endTod)
->>>>>>> 9c90cbbacd196fbe9ece9d1b1e2474d4605b9052
 	{
 		this.year = year;
 		this.month = month;
@@ -45,11 +40,8 @@ public class Event implements Comparable<Event>
 		this.description = description;
 		this.startTime = startTime;
 		this.endTime = endTime;
-<<<<<<< HEAD
 		this.startTod = startTod;
 		this.endTod = endTod;
-=======
->>>>>>> 9c90cbbacd196fbe9ece9d1b1e2474d4605b9052
 	}
 	
 
@@ -100,14 +92,6 @@ public class Event implements Comparable<Event>
 			otherTime -= 1200;
 
 		return thisTime - otherTime;
-	}
-
-	public void allDay()
-	{
-		startTime = 1200;
-		endTime = 1145;
-		startTod = "am";
-		endTod = "pm";
 	}
 	/**
 	 * 

@@ -4,3 +4,11 @@
 - Adjust error message to center of the window
 - Change the way of printing event in toString() method in Event class
 - Add system.out.println at CalendarView class to test if the event is successfully added into the calendar model.
+
+06/08/2017 05:01 PM
+- Draw the basic interface of calendar for month view
+- positions for weekdays label like Monday, Tuesday...etc still need to be fixed
+- Today's date is highlighted
+- Functionalities for Next month and previous month is added into the calendar
+- create function is connected with main calendar interface
+- Position the number of the day on top-left corder of the cell
