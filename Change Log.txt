@@ -3,7 +3,7 @@
 - Change from military time to regular time
 - Adjust error message to center of the window
 - Change the way of printing event in toString() method in Event class
-- Add system.out.println at CalendarView class to test if the event is successfully added into the calendar model.
+- Add system.out.println at CalendarView class to test if the event is successfully added     into the calendar model.
 
 06/08/2017 05:01 PM
 - Draw the basic interface of calendar for month view
@@ -16,3 +16,21 @@
 06/09/2017 11:48 AM
 - If an event is created, it will show in the cell box of event day
 - Events will be shown in chosen color
+
+06/11/2017 02:37 PM
+- Create Agenda View that can show event in an agenda form
+- Today tab that can bring users to today's date
+
+06/13/2017 12:51 PM
+- Calendar was printing days a littl bit off last time and fixed it this time.
+- Add restriction where users will be noticed by error message if their input for start time    is later    than end time
+- Connect Agenda view with Month View, which means you can go to agenda view by clicking      agenda button from month view
+- Adding holidays as default events and put some symbol icon on those days
+- last and next button is well-positioned.(won't be affected by the length of the month)
+- Day view is created with a table that contains time period and event.
+- HAVE NOT YET implemnented the feature where created events can be seen in day view.(only on      month view)
+- Day view buttons such as today, create and switch month view are made.
+- Every day box in month view is clickable and will lead you to the correspnding date in day    view 
+- Change some of the font style
+- Add icon next to almost every button to make it more vivid.
+- In day view, every time create button is clicked, its default day in combo box will be  current date that is shown in day view 
