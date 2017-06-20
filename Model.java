@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,8 +28,7 @@ public class Model
 	private ArrayList<ChangeListener> listeners;
 	
 	public Model()
-	{
-		
+	{		
 		usedDays = new ArrayList<>();
 		cellDays = new int[6][7];
 		listeners = new ArrayList();
@@ -186,10 +186,10 @@ public class Model
 		{
 			eventDay = new Day(eventDate);
 			eventDay.addEvent(eventToAdd);
-//			addNewDay(eventDay);           (I think it adds twice becase of this line.)
+			addNewDay(eventDay);           
 		}
 		
-		usedDays.add(eventDay);
+//		usedDays.add(eventDay);  it has same purpose with addNewDay which also add the event day into usedDays list
 		
 		changed();
 	}
@@ -201,21 +201,37 @@ public class Model
 	 * deletes either a certain day's events 
 	 * all the days 
 	 */
-	public void delete(String input)
+	public void delete(Event e)
 	{
-		
-			String date = input;
-			
-			for(int i = 0; i < dayCount; i++)
+		for(int i  = 0; i < getDaysArr().size(); i++)
+		{
+			for(int j = 0; j < getDaysArr().get(i).getEventsArr().size(); j++)
 			{
-				if(usedDays.get(i).getDate().equals(date))
+				if(getDaysArr().get(i).getEventsArr().get(j).equals(e))
 				{
-					usedDays.remove(i);
-					dayCount--;
+					getDaysArr().get(i).getEventsArr().remove(e);
 				}
 			}
-			
+		}
+		
+		for(int i  = 0; i < getDaysArr().size(); i++)
+		{
+			for(int j = 0; j < getDaysArr().get(i).getEventsArr().size(); j++)
+			{
+				System.out.println( getDaysArr().get(i).getEventsArr().get(j));
+			}
+		}
 	}
+//			String date = input;
+//			
+//			for(int i = 0; i < dayCount; i++)
+//			{
+//				if(usedDays.get(i).getDate().equals(date))
+//				{
+//					usedDays.remove(i);
+//					dayCount--;
+//				}
+//			}
 		
 		
 		
@@ -258,12 +274,13 @@ public class Model
 	 */
 	public boolean dayAlreadyExists(String day)
 	{
-		
-		for(int i = 0; i < dayCount; i++) //wtf is wrong with this. The loops doesn't run. I'm testing delete
+		for(int i = 0; i < dayCount; i++) //wtf is wrong with this. The loops doesn't run. I'm testing delete // I fixed it
 		{
-			
+//			System.out.println(usedDays.get(i).getDate() + "=?" + day);
 			if(usedDays.get(i).getDate().equals(day))
-			return true;
+			{
+				return true;
+			}
 		}
 		return false;
 	}

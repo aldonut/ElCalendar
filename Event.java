@@ -1,3 +1,5 @@
+
+
 import java.awt.Color;
 import java.text.ParseException;
 import java.util.Scanner;
@@ -184,12 +186,52 @@ public class Event implements Comparable<Event>
 		if(endMin.equals("0"))
 			endMin = "00";
 		String strEndTime = endHour + ":" + endMin + " " + endTod;
-		return description + "   " +  strStartTime + "  -  " + strEndTime + color;
+		return description + "   " +  strStartTime + "  -  " + strEndTime + "  " + color;
+	}
+	
+	public String getStrStartTime()
+	{
+		String startHour = String.valueOf(startTime/100);
+		String startMin = String.valueOf(startTime % 100);
+		if(startMin.equals("0"))
+			startMin = "00";
+		String strStartTime = startHour  + ":" + startMin;
+		return strStartTime;
+	}
+	
+	public String getStrEndTime()
+	{
+		String endHour = String.valueOf(endTime/100);
+		String endMin = String.valueOf(endTime % 100);
+		if(endMin.equals("0"))
+			endMin = "00";
+		String strEndTime = endHour + ":" + endMin;
+		return strEndTime;
+	}
+	
+	
+	
+	public String getStrTime()
+	{
+		return getStrStartTime()  + " " + startTod + "  -  " + getStrEndTime()  + " " + endTod;
 	}
 	
 	public int getColor()
 	{
 		return color;
+	}
+	
+	public void updateEvent(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod, int color)
+	{
+		this.year = year;
+		this.month = month;
+		this.day = day;
+		this.description = description;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.startTod = startTod;
+		this.endTod = endTod;
+		this.color = color;
 	}
 
 	

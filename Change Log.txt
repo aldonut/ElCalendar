@@ -34,3 +34,17 @@
 - Change some of the font style
 - Add icon next to almost every button to make it more vivid.
 - In day view, every time create button is clicked, its default day in combo box will be  current date that is shown in day view 
+
+6/20/2017 12:24 PM
+- Adding background images for calendar.
+- Background images will change according what months are being viewed.
+- Use Block to record events in day view.
+- Background feature also works in day view as well.
+- Change the font of the day shown on calendar to make it stand out more after adding background
+- Create a bookmark-like event preview instead of just rectangle as background
+- When there is no event in a specific day in day view, it will show no event block instead of leaving it empty.
+- Change the style of showing month and year in month view
+- delete button works by clicking delete and then click the cross next to the event that is intended to be deleted
+- Update feature works by clicking the event block that is intended to be updated. The event box that is shown will have speicific day and time.
+- Today's date will be highlight by a red box and the color of the day will be white
+- Change the color of agenda view to make it more "sticker note-like".
