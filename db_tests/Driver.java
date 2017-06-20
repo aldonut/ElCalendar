@@ -15,7 +15,7 @@ public class Driver {
 			//connect
 			Connection myConn = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/sonoo", "root", "chodo");
-			
+			/*
 			//add
 			Statement myStmt2 = myConn.createStatement();
 			
@@ -25,7 +25,18 @@ public class Driver {
 			
 			myStmt2.executeUpdate(insert);
 			//add
+			*/
+	//-----------------------------------------------------------------------//
+			/*
+			//edit
+			Statement myStmt3 = myConn.createStatement();
 			
+			String edit = "update test " +
+							" set last='longdick'"
+							+ " where first='tom'";
+			
+			myStmt3.executeUpdate(edit);
+			*/
 			
 			//print
 			Statement myStmt = myConn.createStatement();
@@ -43,4 +54,3 @@ public class Driver {
 
 }
 }
-
