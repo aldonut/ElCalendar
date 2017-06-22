@@ -1,5 +1,3 @@
-
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
@@ -29,7 +27,9 @@ public class CalendarView
 		m.addEvent(2017, 12, 25, 1200, 1145, "Christmas", "A.M.", "P.M.", 0);
 		m.addEvent(2018, 1, 1, 1200, 1145, "New Year", "A.M.", "P.M.", 0);
 		calendarFrame = new JFrame("Calendar (MonthView)");
-		calendarFrame.setSize(1920, 1080);
+		Dimension DimMax = Toolkit.getDefaultToolkit().getScreenSize();
+		calendarFrame.setSize(DimMax);
+		calendarFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		
 		// Getting all available names for fonts in Java library
@@ -61,12 +61,12 @@ public class CalendarView
 		dayLabel.setOpaque(false);
 		
 		//Create last day and next day button so users can go over every day
-		JButton lastDayButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/last.png")).getImage()));
+		JButton lastDayButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/last.png")).getImage()));
 		lastDayButton.setOpaque(false);
 		lastDayButton.setContentAreaFilled(false);
 		lastDayButton.setBorderPainted(false);
 		lastDayButton.setRolloverEnabled(true);
-		JButton nextDayButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/next.png")).getImage()));
+		JButton nextDayButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/next.png")).getImage()));
 		nextDayButton.setOpaque(false);
 		nextDayButton.setContentAreaFilled(false);
 		nextDayButton.setBorderPainted(false);
@@ -95,7 +95,7 @@ public class CalendarView
 		// Create tabs that are functional and useful for users in day view, including create, switching back to month view and switching back to today's date
 		//below is implementation of today
 		
-		JButton todayButton = beautifyButton("Today", "/today.png");
+		JButton todayButton = beautifyButton("Today", "/img/today.png");
 		Dimension d = new Dimension(150,40);
 		todayButton.setPreferredSize(d);
 		todayButton.addActionListener(new ActionListener()
@@ -109,7 +109,7 @@ public class CalendarView
 		});
 		
 		// below is implementation for create
-		JButton createButton = beautifyButton("Create", "/create.png");
+		JButton createButton = beautifyButton("Create", "/img/create.png");
 		createButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -122,7 +122,7 @@ public class CalendarView
 
 		
 		//below is implementation for switching to month view
-		JButton monthView = beautifyButton("Month", "/monthView.png");
+		JButton monthView = beautifyButton("Month", "/img/monthView.png");
 		monthView.setPreferredSize(d);
 		monthView.addActionListener(new ActionListener()
 		{
@@ -156,12 +156,7 @@ public class CalendarView
 		menuPanel.add(dayLabel, BorderLayout.NORTH);
 		menuPanel.add(buttonPanel, BorderLayout.EAST);
 		menuPanel.setPreferredSize(new Dimension(1900,(int) menuPanel.getPreferredSize().getHeight()));
-
-		
-		
-
-		
-		
+	
 		JPanel contentPanel = new JPanel();
 		
 		Box scrollBox = Box.createVerticalBox();
@@ -177,7 +172,7 @@ public class CalendarView
 		}
 		
 		//create delete button and modified its look
-		JButton deleteButton = beautifyButton("Delete", "/delete.png");
+		JButton deleteButton = beautifyButton("Delete", "/img/delete.png");
 		deleteButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent event) 
@@ -205,7 +200,6 @@ public class CalendarView
 				{
 					for(int j = 0; j < m.getDaysArr().get(i).getEventsArr().size(); j++)
 					{
-						System.out.println("HasEventOnTHeDAY");
 						//if noEventBox is created, and try to insert new block, delete noEventBox first
 						if(numOfNoEventBlock != 0)
 						{
@@ -250,7 +244,7 @@ public class CalendarView
 		
 		else
 		{
-			Image cancellmg = new ImageIcon(this.getClass().getResource("/cancel.png")).getImage();
+			Image cancellmg = new ImageIcon(this.getClass().getResource("/img/cancel.png")).getImage();
 			for(int i = 0; i < m.getDaysArr().size(); i++)
 			{
 				if(m.getMovedAroundCal().get(Calendar.DAY_OF_MONTH) == m.getDaysArr().get(i).getDay() && m.getMovedAroundCal().get(Calendar.MONTH) + 1  == m.getDaysArr().get(i).getMonth() && m.getMovedAroundCal().get(Calendar.YEAR) == m.getDaysArr().get(i).getYear())
@@ -267,7 +261,7 @@ public class CalendarView
 							strTime = "All Day";
 						Color color = colorList[currentEvent.getColor()];
 						Block block = new Block(true,0,40,1000,200,desc, strTime, color);
-						Image deleteEventImg = new ImageIcon(getClass().getResource("/deleteEvent.png")).getImage();
+						Image deleteEventImg = new ImageIcon(getClass().getResource("/img/deleteEvent.png")).getImage();
 						JButton deleteEventButton = new JButton(new ImageIcon(deleteEventImg));
 						deleteEventButton.setBorderPainted(false);
 						deleteEventButton.setOpaque(false);
@@ -301,22 +295,18 @@ public class CalendarView
 		scrollPane.getViewport().setOpaque(false);
 		
 		
-		BackgroundFrame background = new BackgroundFrame(m.getMovedAroundCal().get(Calendar.MONTH) + 1, 1920, 1080);
-		background.setOpaque(false);
+		JLabel backgroundLabel = new JLabel();
+		Image img = getBackgroundimage().getImage().getScaledInstance(calendarFrame.getWidth(), calendarFrame.getHeight(), Image.SCALE_DEFAULT);
+		backgroundLabel.setIcon(new ImageIcon(img));
+		backgroundLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		
-		background.add(menuPanel, BorderLayout.NORTH);
-		background.add(scrollPane,BorderLayout.CENTER);
-		scrollPane.setPreferredSize(new Dimension(1900,1000));
-		
-		
+		calendarFrame.setContentPane(backgroundLabel);
 
-		calendarFrame.add(background);
+		calendarFrame.setLayout(new BorderLayout());
+		calendarFrame.add(menuPanel, BorderLayout.NORTH);
+		calendarFrame.add(scrollPane,BorderLayout.CENTER);
 
-
-//		calendarFrame.setLayout(new BorderLayout());
-//		calendarFrame.add(menuPanel, BorderLayout.NORTH);
-//		calendarFrame.add(scrollPane, BorderLayout.CENTER);
 
 		calendarFrame.setVisible(true);
 		calendarFrame.setLocationRelativeTo(null);
@@ -382,7 +372,6 @@ public class CalendarView
 				{
 					Object[] row = new Object[3];
 					Event testEvent = m.getDaysArr().get(i).getEventsArr().get(j);
-					System.out.println(testEvent);	
 					String time = "";
 					String startMinute = String.valueOf(testEvent.getStartTime() % 100);
 					String endMinute = String.valueOf(testEvent.getEndTime() % 100);
@@ -472,12 +461,12 @@ public class CalendarView
 //		monthAndYearLabel.setFont(new Font("Elephant", Font.BOLD, 36));
 		
 		//Make last and next Month button with images
-		JButton lastMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/last.png")).getImage()));
+		JButton lastMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/last.png")).getImage()));
 		lastMonthButton.setOpaque(false);
 		lastMonthButton.setContentAreaFilled(false);
 		lastMonthButton.setBorderPainted(false);
 		lastMonthButton.setRolloverEnabled(true);
-		JButton nextMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/next.png")).getImage()));
+		JButton nextMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/next.png")).getImage()));
 		nextMonthButton.setOpaque(false);
 		nextMonthButton.setContentAreaFilled(false);
 		nextMonthButton.setBorderPainted(false);
@@ -504,7 +493,7 @@ public class CalendarView
 		
 
 		//Create today button which brings users to today's date as soon as it is clicked
-		JButton todayButton = beautifyButton("Today", "/today.png");
+		JButton todayButton = beautifyButton("Today", "/img/today.png");
 		Dimension d = new Dimension(140,40);
 		todayButton.setPreferredSize(d);
 		todayButton.addActionListener(new ActionListener()
@@ -519,7 +508,7 @@ public class CalendarView
 		});
 		
 		//Create Day button that can switch the window to day view
-		JButton dayView = beautifyButton("Day", "/dayView.png");
+		JButton dayView = beautifyButton("Day", "/img/dayView.png");
 		dayView.setPreferredSize(d);
 		dayView.addActionListener(new ActionListener()
 		{
@@ -532,7 +521,7 @@ public class CalendarView
 		
 		//Create agenda button which makes users able to see their events in agenda form
 		
-		JButton agendaButton = beautifyButton("Agenda", "/agenda.png");
+		JButton agendaButton = beautifyButton("Agenda", "/img/agenda.png");
 		agendaButton.setPreferredSize(d);
 		agendaButton.addActionListener(new ActionListener()
 		{
@@ -587,7 +576,7 @@ public class CalendarView
 		Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 20);
 		
 		// Make "Create" button and connect it to functional "create" method
-		Image createImg = new ImageIcon(this.getClass().getResource("/create.png")).getImage();
+		Image createImg = new ImageIcon(this.getClass().getResource("/img/create.png")).getImage();
 		JButton createButton = new JButton("Create", new ImageIcon(createImg));
 		createButton.setForeground(Color.WHITE);
 		createButton.setBackground(Color.GRAY);
@@ -612,21 +601,21 @@ public class CalendarView
 		weekDayPanel.setOpaque(false);
 		box.add(monthAndYearPanel);
 		box.add(weekDayPanel);
+		box.setOpaque(false);
 		
-		JPanel p = new BackgroundFrame(intRecentMonth + 1, calendarFrame.getWidth(), calendarFrame.getHeight());
-//		calendarFrame.setContentPane(new BackgroundFrame());
-//		calendarFrame.add(box, BorderLayout.NORTH);
-//		calendarFrame.add(daysPanel, BorderLayout.CENTER);
 		
-		JPanel boxPanel = new JPanel();
-		boxPanel.add(box);
-		boxPanel.setPreferredSize(new Dimension(1800, 200));
+		JLabel backgroundLabel = new JLabel();
+		Image img = getBackgroundimage().getImage().getScaledInstance(calendarFrame.getWidth(), calendarFrame.getHeight(), Image.SCALE_DEFAULT);
+		backgroundLabel.setIcon(new ImageIcon(img));
+		backgroundLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		p.add(boxPanel, BorderLayout.NORTH);
-		p.add(daysPanel, BorderLayout.CENTER);
-		boxPanel.setOpaque(false);
 		
-		calendarFrame.add(p);
+		calendarFrame.setContentPane(backgroundLabel);
+		calendarFrame.setLayout(new BorderLayout());
+		calendarFrame.add(box, BorderLayout.NORTH);
+		calendarFrame.add(daysPanel, BorderLayout.CENTER);
+
+
 		calendarFrame.setLocationRelativeTo(null);
 		calendarFrame.setVisible(true);
 		calendarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -712,62 +701,37 @@ public class CalendarView
 				
 				if(isIndependentDay)
 				{
-					Image img = new ImageIcon(this.getClass().getResource("/independence.png")).getImage();
+					Image img = new ImageIcon(this.getClass().getResource("/img/independence.png")).getImage();
 					JLabel imgLabel = new JLabel(new ImageIcon(img));
-					textAndImagePanel.add(dayLabel);
-					textAndImagePanel.add(imgLabel);
-					textAndImagePanel.setOpaque(false);
-					textAndImagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-					dayButton.add(textAndImagePanel, BorderLayout.NORTH);
-					dayButton.setContentAreaFilled(false);
+					markHolidy(textAndImagePanel, dayLabel, imgLabel, dayButton);
 				}
 				
 				if(isDayLightSaving)
 				{
-					Image img = new ImageIcon(this.getClass().getResource("/dayLight.png")).getImage();
+					Image img = new ImageIcon(this.getClass().getResource("/img/dayLight.png")).getImage();
 					JLabel imgLabel = new JLabel(new ImageIcon(img));
-					textAndImagePanel.add(dayLabel);
-					textAndImagePanel.add(imgLabel);
-					textAndImagePanel.setOpaque(false);
-					textAndImagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-					dayButton.add(textAndImagePanel, BorderLayout.NORTH);
-					dayButton.setContentAreaFilled(false);
+					markHolidy(textAndImagePanel, dayLabel, imgLabel, dayButton);
 				}
 				
 				if(isThanksGiving)
 				{
-					Image img = new ImageIcon(this.getClass().getResource("/turkey.png")).getImage();
+					Image img = new ImageIcon(this.getClass().getResource("/img/turkey.png")).getImage();
 					JLabel imgLabel = new JLabel(new ImageIcon(img));
-					textAndImagePanel.add(dayLabel);
-					textAndImagePanel.add(imgLabel);
-					textAndImagePanel.setOpaque(false);
-					textAndImagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-					dayButton.add(textAndImagePanel, BorderLayout.NORTH);
-					dayButton.setContentAreaFilled(false);
+					markHolidy(textAndImagePanel, dayLabel, imgLabel, dayButton);
 				}
 				
 				if(isChristmas)
 				{
-					Image img = new ImageIcon(this.getClass().getResource("/Christmas.png")).getImage();
+					Image img = new ImageIcon(this.getClass().getResource("/img/Christmas.png")).getImage();
 					JLabel imgLabel = new JLabel(new ImageIcon(img));
-					textAndImagePanel.add(dayLabel);
-					textAndImagePanel.add(imgLabel);
-					textAndImagePanel.setOpaque(false);
-					textAndImagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-					dayButton.add(textAndImagePanel, BorderLayout.NORTH);
-					dayButton.setContentAreaFilled(false);
+					markHolidy(textAndImagePanel, dayLabel, imgLabel, dayButton);
 				}
 				
 				if(isNewYear)
 				{
-					Image img = new ImageIcon(this.getClass().getResource("/newYear.png")).getImage();
+					Image img = new ImageIcon(this.getClass().getResource("/img/newYear.png")).getImage();
 					JLabel imgLabel = new JLabel(new ImageIcon(img));
-					textAndImagePanel.add(dayLabel);
-					textAndImagePanel.add(imgLabel);
-					textAndImagePanel.setOpaque(false);
-					textAndImagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-					dayButton.add(textAndImagePanel, BorderLayout.NORTH);
-					dayButton.setContentAreaFilled(false);
+					markHolidy(textAndImagePanel, dayLabel, imgLabel, dayButton);
 				}
 				
 				
@@ -810,7 +774,6 @@ public class CalendarView
 								}
 								else
 								{
-									System.out.println("Too many preview events");
 									JButton moreButton = new JButton("More Event: ");
 									moreButton.setForeground(Color.DARK_GRAY);
 									moreButton.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -842,7 +805,6 @@ public class CalendarView
 				{
 					public void actionPerformed(ActionEvent e) 
 					{
-						System.out.println(e.getActionCommand());
 						m.getMovedAroundCal().set(Calendar.DAY_OF_MONTH, Integer.valueOf(dayLabel.getText()));
 						calendarFrame.getContentPane().removeAll();
 						paintDayView();
@@ -853,6 +815,301 @@ public class CalendarView
 		return daysPanel;
 	}
 	
+	public void createEventBox()
+	{
+		Hashtable<String, Integer> monthList = makeMonthList();
+		JFrame eventFrame = new JFrame("Event Box");
+		eventFrame.setSize(600, 450);
+		
+		Font labelFont = new Font("SanSerif", Font.BOLD, 20);
+		Font contentFont = new Font("SansSerif", Font.BOLD, 16);
+		JPanel descPanel = new JPanel();
+		JPanel datePanel = new JPanel();
+		JPanel startTimePanel = new JPanel();
+		JPanel endTimePanel = new JPanel();
+		JPanel colorPanel = new JPanel();
+		
+		//implement box layout
+		Box box = Box.createVerticalBox();
+		
+		
+		JLabel descLabel = new JLabel("Description: ");
+		descLabel.setFont(labelFont);
+		
+		//add labels and set its fonts.
+		JLabel dateLabel = new JLabel("Date: ");
+		JLabel startTimeLabel = new JLabel("Start Time:");
+		JLabel endTimeLabel = new JLabel("End Time: ");
+		dateLabel.setFont(labelFont);
+		startTimeLabel.setFont(labelFont);
+		endTimeLabel.setFont(labelFont);
+		JTextField descText = new JTextField(20);
+		descText.setFont(new Font("SansSerif", Font.PLAIN, 16));
+		JLabel colorLabel = new JLabel("Color: ");
+		colorLabel.setFont(labelFont);
+		
+		
+		// add components in description section and put it into the top of the window
+		descPanel.add(descLabel);
+		descPanel.add(descText);
+		box.add(descPanel);
+		
+		//add components in date section
+		JComboBox yearBox = createYearBox();
+		JComboBox monthBox = createMonthBox();
+		JComboBox dayBox = new JComboBox();
+		datePanel.add(dateLabel);
+		datePanel.add(yearBox);
+		datePanel.add(monthBox);
+		monthBox.setSelectedIndex(m.getMovedAroundCal().get(Calendar.MONTH));
+		Calendar temp = Calendar.getInstance();
+		temp.set(Calendar.MONTH, monthBox.getSelectedIndex() + 1);
+		for(int i = 0; i < temp.getActualMaximum(Calendar.DAY_OF_MONTH); i++)
+			dayBox.addItem(i);
+		dayBox.setFont(contentFont);
+		dayBox.setSelectedIndex(m.getMovedAroundCal().get(Calendar.DAY_OF_MONTH));
+		datePanel.add(dayBox);
+		
+		// In start day section, adjust the maximum of the days according to the input from month section
+		monthBox.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				String selectedMonth = (String) monthBox.getSelectedItem(); // read input from the month section
+				Calendar c = m.getMovedAroundCal();
+				c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
+				int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+				dayBox.removeAllItems();
+				for(int i = 1; i <= maxDayOfMonth; i++)
+				{
+					dayBox.addItem(i);
+				}
+				datePanel.repaint();
+			}		
+		});
+		
+		//Create combo box for start time and end time
+		startTimePanel.add(startTimeLabel);
+		JComboBox startTime = createTimeBox();
+		startTimePanel.add(startTime);
+		endTimePanel.add(endTimeLabel);
+		JComboBox endTime = createTimeBox();
+		endTimePanel.add(endTime);
+		
+		//create radio button for AM and PM options
+		JRadioButton startTimeAM = new JRadioButton("A.M.");
+		startTimeAM.setFont(contentFont);
+		JRadioButton startTimePM = new JRadioButton("P.M.");
+		startTimePM.setFont(contentFont);
+		JRadioButton endTimeAM = new JRadioButton("A.M.");
+		endTimeAM.setFont(contentFont);
+		JRadioButton endTimePM = new JRadioButton("P.M.");
+		endTimePM.setFont(contentFont);
+		
+		//adding radio button in a group
+		ButtonGroup startGroup = new ButtonGroup();
+		startGroup.add(startTimeAM);
+		startGroup.add(startTimePM);
+		
+		ButtonGroup endGroup = new ButtonGroup();
+		endGroup.add(endTimeAM);
+		endGroup.add(endTimePM);
+		
+		startTimePanel.add(startTimeAM);
+		startTimePanel.add(startTimePM);
+		endTimePanel.add(endTimeAM);
+		endTimePanel.add(endTimePM);
+		
+		//Make a checkbox to check if an event lasts all day
+		JCheckBox allDayCheck = new JCheckBox("All Day");
+		allDayCheck.setFont(contentFont);
+		datePanel.add(allDayCheck);
+		allDayCheck.addItemListener(new ItemListener()
+		{
+			public void itemStateChanged(ItemEvent arg0) 
+			{
+				startTime.setEnabled(!allDayCheck.isSelected());
+				endTime.setEnabled(!allDayCheck.isSelected());
+				startTimeAM.setEnabled(!allDayCheck.isSelected());
+				startTimePM.setEnabled(!allDayCheck.isSelected());
+				endTimeAM.setEnabled(!allDayCheck.isSelected());
+				endTimePM.setEnabled(!allDayCheck.isSelected());
+			}		
+		});
+		
+		
+		//  add components in color area and put it below end date section
+		colorPanel.add(colorLabel);
+		JComboBox colorBox = createColorBox();
+		colorPanel.add(colorBox);
+		
+		
+		//create save button and make it functional
+		Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 18);
+		Image img = new ImageIcon(this.getClass().getResource("/img/save.png")).getImage();
+		JButton saveButton = new JButton("Save", new ImageIcon(img));
+		saveButton.setBackground(new Color(50,205,50));
+		saveButton.setForeground(Color.WHITE);
+		saveButton.setFont(buttonFont);
+		saveButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event) 
+			{		
+				//read inputs and convert them into parameters that the Event constructor can take
+				String description = descText.getText();
+				int year = (int) yearBox.getSelectedItem();
+				String strMonth = (String) monthBox.getSelectedItem();
+				int intMonth = monthList.get(strMonth);
+				int day = (int) dayBox.getSelectedItem();
+				String strStartTime = (String) startTime.getSelectedItem();
+				int intStartTime = Integer.valueOf(strStartTime.substring(0, 2)) * 100 + Integer.valueOf(strStartTime.substring(3, 5));
+				String strEndTime = (String) endTime.getSelectedItem();
+				int intEndTime = Integer.valueOf(strEndTime.substring(0, 2)) * 100 + Integer.valueOf(strEndTime.substring(3, 5));
+				int color = (int) colorBox.getSelectedIndex();
+				
+				String startTod = "";
+				if(startTimeAM.isSelected())
+					startTod = startTimeAM.getText();
+				else
+					startTod = startTimePM.getText();
+				
+				String endTod = "";
+				if(endTimeAM.isSelected())
+					endTod = endTimeAM.getText();
+				else
+					endTod = endTimePM.getText();
+				boolean blankDesc = descText.getText().equals("");
+				boolean wrongStartTimeInput = !startTimeAM.isSelected() && !startTimePM.isSelected() && !allDayCheck.isSelected();
+				boolean wrongEndTimeInput = !endTimeAM.isSelected() && !endTimePM.isSelected() && !allDayCheck.isSelected();
+				boolean startLaterThanEnd = false;
+				
+				//Check if start time is later than end time
+				int compareStartTime = 0;
+				int compareEndTime = 0;
+				compareStartTime = intStartTime;
+				compareEndTime = intEndTime;
+				if(startTod.equals("A.M."))
+					if(compareStartTime >= 1200)
+						compareStartTime = compareStartTime - 1200;
+				if(endTod.equals("A.M."))
+					if(compareEndTime >= 1200)
+						compareEndTime = compareEndTime - 1200;
+				if(startTod.equals("P.M."))
+					if(compareStartTime < 1200)
+						compareStartTime = compareStartTime + 1200;
+				if(endTod.equals("P.M."))
+					if(compareEndTime < 1200)
+						compareEndTime = compareEndTime + 1200;
+				startLaterThanEnd = compareStartTime - compareEndTime > 0;
+				
+				//check if there is any error like leaving description blank or didn't choose between AM and PM for start time or end time
+				if(blankDesc || wrongStartTimeInput || wrongEndTimeInput || startLaterThanEnd)
+				{
+					//Construct a basic error message window
+					JFrame errorFrame = new JFrame("Error");
+					errorFrame.setSize(450,150);
+					JPanel errorPanel = new JPanel();
+						
+					JLabel imageLabel = new JLabel();
+					Image img = new ImageIcon(this.getClass().getResource("/img/errorIcon.png")).getImage();
+					imageLabel.setIcon(new ImageIcon(img));
+					errorPanel.add(imageLabel);
+					JLabel errorMessage = new JLabel("");
+					
+					//check which error it is to show different messages
+					if(blankDesc)
+					{
+						errorMessage.setText("Description cannot be left blank.");
+					}
+					
+					else if(wrongStartTimeInput)
+					{
+						errorMessage.setText("Start time should be either A.M. or P.M.");
+						errorFrame.setSize(550, 150);
+					}
+									
+					else if(wrongEndTimeInput)
+					{
+						errorMessage.setText("End time should be either A.M. or P.M.");
+						errorFrame.setSize(550, 150);
+					}
+					
+					else if(startLaterThanEnd)
+					{
+						errorMessage.setText("Start time cannot be later than end time.");
+						errorFrame.setSize(550, 150);
+					}
+								
+					errorMessage.setFont(new Font("SanSerif", Font.BOLD, 24));
+					JButton OkButton = new JButton("OK");
+					OkButton.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e) 
+						{
+							errorFrame.dispose();			
+						}
+				});
+					errorPanel.add(errorMessage);
+					errorFrame.add(errorPanel);
+					errorPanel.add(OkButton);
+					errorFrame.setLocationRelativeTo(eventFrame);
+					errorFrame.setVisible(true);
+					return;
+				}		
+	
+				m.addEvent(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod, color);
+				
+
+				// Repaint the calendar after an event is added
+				eventFrame.dispose();		
+				calendarFrame.getContentPane().removeAll();
+				paintDayView();
+				
+			System.out.println("There is(are) " + m.getDaysArr().size() + " events in database(model): ");
+			for(int i  = 0; i < m.getDaysArr().size(); i++)
+			{
+				for(int j = 0; j < m.getDaysArr().get(i).getEventsArr().size(); j++)
+				System.out.print(m.getDaysArr().get(i) + "   ");
+				m.getDaysArr().get(i).returnEventList();
+			}
+			
+			}
+			
+		});
+		
+		//create cancel button and modified its look
+		Image cancelImg = new ImageIcon(this.getClass().getResource("/img/cancel.png")).getImage();
+		JButton cancelButton = new JButton("Cancel", new ImageIcon(cancelImg));
+		cancelButton.setBackground(new Color(255,60,60));
+		cancelButton.setForeground(Color.WHITE);
+		cancelButton.setFont(buttonFont);
+		cancelButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event) 
+			{
+				eventFrame.dispose();
+			}
+		});
+		
+		box.add(datePanel);
+		
+		box.add(startTimePanel);
+		
+		box.add(endTimePanel);
+	
+		box.add(colorPanel);
+		
+		// add buttons in the bottom of the event box
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout());
+		buttonPanel.add(saveButton);
+		buttonPanel.add(cancelButton);
+		box.add(buttonPanel);
+		
+		eventFrame.add(box);
+		eventFrame.setLocationRelativeTo(eventFrame);
+		eventFrame.setVisible(true);
+	}
 	
 	
 	public void updateEvent(Event eventToUpdate)
@@ -989,7 +1246,6 @@ public class CalendarView
 			if(eventToUpdate.getStrStartTime().equals(startTime.getItemAt(i)))
 			{
 				startTime.setSelectedIndex(i);
-				System.out.println(i);
 				break;
 			}
 		}
@@ -998,7 +1254,7 @@ public class CalendarView
 		
 		
 		Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 18);
-		Image img = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
+		Image img = new ImageIcon(this.getClass().getResource("/img/update.png")).getImage();
 		JButton updateButton = new JButton("Update", new ImageIcon(img));
 		updateButton.setBackground(new Color(30,144,255));
 		updateButton.setForeground(Color.WHITE);
@@ -1063,7 +1319,7 @@ public class CalendarView
 					JPanel errorPanel = new JPanel();
 						
 					JLabel imageLabel = new JLabel();
-					Image img = new ImageIcon(this.getClass().getResource("/errorIcon.png")).getImage();
+					Image img = new ImageIcon(this.getClass().getResource("/img/errorIcon.png")).getImage();
 					imageLabel.setIcon(new ImageIcon(img));
 					errorPanel.add(imageLabel);
 					JLabel errorMessage = new JLabel("");
@@ -1131,7 +1387,7 @@ public class CalendarView
 		});
 		
 		//create cancel button and modified its look
-		Image cancelImg = new ImageIcon(this.getClass().getResource("/cancel.png")).getImage();
+		Image cancelImg = new ImageIcon(this.getClass().getResource("/img/cancel.png")).getImage();
 		JButton cancelButton = new JButton("Cancel", new ImageIcon(cancelImg));
 		cancelButton.setBackground(new Color(255,60,60));
 		cancelButton.setForeground(Color.WHITE);
@@ -1164,418 +1420,7 @@ public class CalendarView
 		eventFrame.setVisible(true);
 	}
 	
-	
-	
-	public void createEventBox()
-	{
-		Hashtable<String, Integer> monthList = makeMonthList();
-		JFrame eventFrame = new JFrame("Event Box");
-		eventFrame.setSize(600, 450);
 		
-		Font labelFont = new Font("SanSerif", Font.BOLD, 20);
-		Font contentFont = new Font("SansSerif", Font.BOLD, 16);
-		JPanel descPanel = new JPanel();
-		JPanel datePanel = new JPanel();
-		JPanel startTimePanel = new JPanel();
-		JPanel endTimePanel = new JPanel();
-		JPanel colorPanel = new JPanel();
-		
-		//implement box layout
-		Box box = Box.createVerticalBox();
-		
-		
-		JLabel descLabel = new JLabel("Description: ");
-		descLabel.setFont(labelFont);
-		
-		//add labels and set its fonts.
-		JLabel dateLabel = new JLabel("Date: ");
-		JLabel startTimeLabel = new JLabel("Start Time:");
-		JLabel endTimeLabel = new JLabel("End Time: ");
-		dateLabel.setFont(labelFont);
-		startTimeLabel.setFont(labelFont);
-		endTimeLabel.setFont(labelFont);
-		JTextField descText = new JTextField(20);
-		descText.setFont(new Font("SansSerif", Font.PLAIN, 16));
-		JLabel colorLabel = new JLabel("Color: ");
-		colorLabel.setFont(labelFont);
-		
-		
-		// add components in description section and put it into the top of the window
-		descPanel.add(descLabel);
-		descPanel.add(descText);
-		box.add(descPanel);
-		
-		//add components in date section
-		JComboBox yearBox = createYearBox();
-		JComboBox monthBox = createMonthBox();
-		JComboBox dayBox = new JComboBox();
-		datePanel.add(dateLabel);
-		datePanel.add(yearBox);
-		datePanel.add(monthBox);
-		monthBox.setSelectedIndex(m.getMovedAroundCal().get(Calendar.MONTH));
-		Calendar temp = Calendar.getInstance();
-		temp.set(Calendar.MONTH, monthBox.getSelectedIndex() + 1);
-		for(int i = 0; i < temp.getActualMaximum(Calendar.DAY_OF_MONTH); i++)
-			dayBox.addItem(i);
-		dayBox.setFont(contentFont);
-		dayBox.setSelectedIndex(m.getMovedAroundCal().get(Calendar.DAY_OF_MONTH));
-		datePanel.add(dayBox);
-		
-		// add components in start Date area and put it below description section (Not sure if it's needed but leave it there for future purpose)
-	//	startDatePanel.add(startDateLabel);
-	//	startDatePanel.add(createYearBox());
-	//	JComboBox startMonthBox = createMonthBox();
-	//	startDatePanel.add(startMonthBox);
-	//	JComboBox startDayBox = createDayBox();
-	//	startDatePanel.add(startDayBox);
-		
-	//	 add components in end Date area and put it below start date section
-	//	endDatePanel.add(endDateLabel);
-	//	endDatePanel.add(createYearBox());
-	//	JComboBox endMonthBox = createMonthBox();
-	//	endDatePanel.add(endMonthBox);	
-	//	JComboBox endDayBox = createDayBox();
-	//	endDatePanel.add(endDayBox);
-		
-		// In start day section, adjust the maximum of the days according to the input from month section
-		monthBox.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e) 
-			{
-				String selectedMonth = (String) monthBox.getSelectedItem(); // read input from the month section
-				Calendar c = m.getMovedAroundCal();
-				c.set(Calendar.MONTH, monthList.get(selectedMonth) - 1);
-				int maxDayOfMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-				dayBox.removeAllItems();
-				for(int i = 1; i <= maxDayOfMonth; i++)
-				{
-					dayBox.addItem(i);
-				}
-				datePanel.repaint();
-			}		
-		});
-		
-		//Create combo box for start time and end time
-		startTimePanel.add(startTimeLabel);
-		JComboBox startTime = createTimeBox();
-		startTimePanel.add(startTime);
-		endTimePanel.add(endTimeLabel);
-		JComboBox endTime = createTimeBox();
-		endTimePanel.add(endTime);
-		
-		//create radio button for AM and PM options
-		JRadioButton startTimeAM = new JRadioButton("A.M.");
-		startTimeAM.setFont(contentFont);
-		JRadioButton startTimePM = new JRadioButton("P.M.");
-		startTimePM.setFont(contentFont);
-		JRadioButton endTimeAM = new JRadioButton("A.M.");
-		endTimeAM.setFont(contentFont);
-		JRadioButton endTimePM = new JRadioButton("P.M.");
-		endTimePM.setFont(contentFont);
-		
-		//adding radio button in a group
-		ButtonGroup startGroup = new ButtonGroup();
-		startGroup.add(startTimeAM);
-		startGroup.add(startTimePM);
-		
-		ButtonGroup endGroup = new ButtonGroup();
-		endGroup.add(endTimeAM);
-		endGroup.add(endTimePM);
-		
-		startTimePanel.add(startTimeAM);
-		startTimePanel.add(startTimePM);
-		endTimePanel.add(endTimeAM);
-		endTimePanel.add(endTimePM);
-		
-		//Make a checkbox to check if an event lasts all day
-		JCheckBox allDayCheck = new JCheckBox("All Day");
-		allDayCheck.setFont(contentFont);
-		datePanel.add(allDayCheck);
-		allDayCheck.addItemListener(new ItemListener()
-		{
-			public void itemStateChanged(ItemEvent arg0) 
-			{
-				startTime.setEnabled(!allDayCheck.isSelected());
-				endTime.setEnabled(!allDayCheck.isSelected());
-				startTimeAM.setEnabled(!allDayCheck.isSelected());
-				startTimePM.setEnabled(!allDayCheck.isSelected());
-				endTimeAM.setEnabled(!allDayCheck.isSelected());
-				endTimePM.setEnabled(!allDayCheck.isSelected());
-			}		
-		});
-		
-		
-		//  add components in color area and put it below end date section
-		colorPanel.add(colorLabel);
-		JComboBox colorBox = createColorBox();
-		colorPanel.add(colorBox);
-		
-		
-		//create save button and make it functional
-		Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 18);
-		Image img = new ImageIcon(this.getClass().getResource("/save.png")).getImage();
-		JButton saveButton = new JButton("Save", new ImageIcon(img));
-		saveButton.setBackground(new Color(50,205,50));
-		saveButton.setForeground(Color.WHITE);
-		saveButton.setFont(buttonFont);
-		saveButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent event) 
-			{		
-				//read inputs and convert them into parameters that the Event constructor can take
-				String description = descText.getText();
-				int year = (int) yearBox.getSelectedItem();
-				String strMonth = (String) monthBox.getSelectedItem();
-				int intMonth = monthList.get(strMonth);
-				int day = (int) dayBox.getSelectedItem();
-				String strStartTime = (String) startTime.getSelectedItem();
-				int intStartTime = Integer.valueOf(strStartTime.substring(0, 2)) * 100 + Integer.valueOf(strStartTime.substring(3, 5));
-				String strEndTime = (String) endTime.getSelectedItem();
-				int intEndTime = Integer.valueOf(strEndTime.substring(0, 2)) * 100 + Integer.valueOf(strEndTime.substring(3, 5));
-				int color = (int) colorBox.getSelectedIndex();
-				
-				String startTod = "";
-				if(startTimeAM.isSelected())
-					startTod = startTimeAM.getText();
-				else
-					startTod = startTimePM.getText();
-				
-				String endTod = "";
-				if(endTimeAM.isSelected())
-					endTod = endTimeAM.getText();
-				else
-					endTod = endTimePM.getText();
-				boolean blankDesc = descText.getText().equals("");
-				boolean wrongStartTimeInput = !startTimeAM.isSelected() && !startTimePM.isSelected() && !allDayCheck.isSelected();
-				boolean wrongEndTimeInput = !endTimeAM.isSelected() && !endTimePM.isSelected() && !allDayCheck.isSelected();
-				boolean startLaterThanEnd = false;
-				
-				//Check if start time is later than end time
-				int compareStartTime = 0;
-				int compareEndTime = 0;
-				compareStartTime = intStartTime;
-				compareEndTime = intEndTime;
-				if(startTod.equals("A.M."))
-					if(compareStartTime >= 1200)
-						compareStartTime = compareStartTime - 1200;
-				if(endTod.equals("A.M."))
-					if(compareEndTime >= 1200)
-						compareEndTime = compareEndTime - 1200;
-				if(startTod.equals("P.M."))
-					if(compareStartTime < 1200)
-						compareStartTime = compareStartTime + 1200;
-				if(endTod.equals("P.M."))
-					if(compareEndTime < 1200)
-						compareEndTime = compareEndTime + 1200;
-				startLaterThanEnd = compareStartTime - compareEndTime > 0;
-				
-				//check if there is any error like leaving description blank or didn't choose between AM and PM for start time or end time
-				if(blankDesc || wrongStartTimeInput || wrongEndTimeInput || startLaterThanEnd)
-				{
-					//Construct a basic error message window
-					JFrame errorFrame = new JFrame("Error");
-					errorFrame.setSize(450,150);
-					JPanel errorPanel = new JPanel();
-						
-					JLabel imageLabel = new JLabel();
-					Image img = new ImageIcon(this.getClass().getResource("/errorIcon.png")).getImage();
-					imageLabel.setIcon(new ImageIcon(img));
-					errorPanel.add(imageLabel);
-					JLabel errorMessage = new JLabel("");
-					
-					//check which error it is to show different messages
-					if(blankDesc)
-					{
-						errorMessage.setText("Description cannot be left blank.");
-					}
-					
-					else if(wrongStartTimeInput)
-					{
-						errorMessage.setText("Start time should be either A.M. or P.M.");
-						errorFrame.setSize(550, 150);
-					}
-									
-					else if(wrongEndTimeInput)
-					{
-						errorMessage.setText("End time should be either A.M. or P.M.");
-						errorFrame.setSize(550, 150);
-					}
-					
-					else if(startLaterThanEnd)
-					{
-						errorMessage.setText("Start time cannot be later than end time.");
-						errorFrame.setSize(550, 150);
-					}
-								
-					errorMessage.setFont(new Font("SanSerif", Font.BOLD, 24));
-					JButton OkButton = new JButton("OK");
-					OkButton.addActionListener(new ActionListener()
-					{
-						public void actionPerformed(ActionEvent e) 
-						{
-							errorFrame.dispose();			
-						}
-				});
-					errorPanel.add(errorMessage);
-					errorFrame.add(errorPanel);
-					errorPanel.add(OkButton);
-					errorFrame.setLocationRelativeTo(eventFrame);
-					errorFrame.setVisible(true);
-					return;
-				}		
-	
-				m.addEvent(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod, color);
-				
-				// Repaint the calendar after an event is added
-				eventFrame.dispose();
-				calendarFrame.getContentPane().removeAll();
-				paintDayView();
-				
-			System.out.println("There is(are) " + m.getDaysArr().size() + " events in database(model): ");
-			for(int i  = 0; i < m.getDaysArr().size(); i++)
-			{
-				for(int j = 0; j < m.getDaysArr().get(i).getEventsArr().size(); j++)
-				System.out.print(m.getDaysArr().get(i) + "   ");
-				m.getDaysArr().get(i).returnEventList();
-			}
-			
-			}
-			
-		});
-		
-		//create cancel button and modified its look
-		Image cancelImg = new ImageIcon(this.getClass().getResource("/cancel.png")).getImage();
-		JButton cancelButton = new JButton("Cancel", new ImageIcon(cancelImg));
-		cancelButton.setBackground(new Color(255,60,60));
-		cancelButton.setForeground(Color.WHITE);
-		cancelButton.setFont(buttonFont);
-		cancelButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent event) 
-			{
-				eventFrame.dispose();
-			}
-		});
-		
-		box.add(datePanel);
-		
-		box.add(startTimePanel);
-		
-		box.add(endTimePanel);
-	
-		box.add(colorPanel);
-		
-		// add buttons in the bottom of the event box
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new FlowLayout());
-		buttonPanel.add(saveButton);
-		buttonPanel.add(cancelButton);
-		box.add(buttonPanel);
-		
-		eventFrame.add(box);
-		eventFrame.setLocationRelativeTo(eventFrame);
-		eventFrame.setVisible(true);
-	}
-	
-	/**
-	 * Create a list of month in a form of Hashtable
-	 * @return the hashtable that contain String names of month and the matching number
-	 */
-	public static Hashtable<String,Integer> makeMonthList()
-	{
-		Hashtable<String,Integer> ht = new Hashtable<>();
-		ht.put("January", 1);
-		ht.put("February", 2);
-		ht.put("March", 3);
-		ht.put("April", 4);
-		ht.put("May", 5);
-		ht.put("June", 6);
-		ht.put("July", 7);
-		ht.put("August", 8);
-		ht.put("September", 9);
-		ht.put("October", 10);
-		ht.put("November", 11);
-		ht.put("December", 12);
-		return ht;
-	}
-	
-	/**
-	 * creates drop down menu(combo box) for year
-	 * @return the ComboBox that identifies year
-	 */
-	public static JComboBox createYearBox()
-	{
-		JComboBox yearBox = new JComboBox();
-		yearBox.setFont(new Font("Sanserif", Font.BOLD, 16));
-		int yearToAdd = 2017;
-		for(int i = 0; i < 20; i++)
-		{
-			yearBox.addItem(yearToAdd);
-			yearToAdd++;
-		}		
-		return yearBox;
-	}
-/**
-* create drop down menu(combo box) for month
-* @return the combo box that has all the names of month
-*/
-public static JComboBox createMonthBox()
-{
-	JComboBox monthBox = new JComboBox();
-	monthBox.setFont(new Font("Sanserif", Font.BOLD, 16));
-	String months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-	for(int i = 0; i < 12; i++)
-	{
-		monthBox.addItem(months[i]);
-	}
-
-	return monthBox;
-}
-
-/**
- * Color selection where provide users to be able to select their color of event text to differentiate the types of events.
- * @return the Combo box for color selection
- */
-public static JComboBox createColorBox()
-{
-	JComboBox colorBox = new JComboBox();
-	colorBox.setFont(new Font("Sanserif", Font.BOLD, 16));
-	colorBox.addItem("Red");
-	colorBox.addItem("Blue");
-	colorBox.addItem("Green");
-	colorBox.addItem("Purple");
-	colorBox.addItem("Brown");
-	return colorBox;
-}
-
-/**
- * Create Time combo box use of start time and end time
- * @return the combo box has differnet time period from hour 1 - 12 with minutes 00, 15, 30 and 45
- */
-public static JComboBox createTimeBox()
-{
-	JComboBox timeBox = new JComboBox();
-	String[] minutesList = {"00","15","30","45"};
-	timeBox.setFont(new Font("Sanserif", Font.BOLD, 16));
-	for(int i = 0; i <= 11; i++)
-	{
-		for(int j = 0; j < 4; j++)
-		{
-			if(i == 0)
-			{
-				timeBox.addItem("12:" + minutesList[j]);
-			}
-			else
-			{
-				if(i < 10)
-					timeBox.addItem("0" + i + ":" + minutesList[j]);
-				else
-					timeBox.addItem(i + ":" + minutesList[j]);
-			}
-		}
-	}
-	return timeBox;
-}
 
 public JButton beautifyButton(String buttonName, String path)
 {
@@ -1586,5 +1431,132 @@ public JButton beautifyButton(String buttonName, String path)
 	button.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
 	return button;
 }
+
+public void markHolidy(JPanel textAndImagePanel, JLabel dayLabel, JLabel imgLabel, JButton dayButton)
+{
+	textAndImagePanel.add(dayLabel);
+	textAndImagePanel.add(imgLabel);
+	textAndImagePanel.setOpaque(false);
+	textAndImagePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+	dayButton.add(textAndImagePanel, BorderLayout.NORTH);
+	dayButton.setContentAreaFilled(false);
+}
+
+public ImageIcon getBackgroundimage()
+{
+	String imagePath = "";
+	
+	int month = m.getMovedAroundCal().get(Calendar.MONTH) + 1;
+	if(month <= 8 && month >= 6)
+		imagePath = "/img/summer.jpg";
+	else if(month <= 11 && month >= 9)
+		imagePath = "/img/fall.jpg";
+	else if(month <= 5 && month >= 3)
+		imagePath = "/img/spring.jpg";
+	else if(month == 12 || month <= 2)
+		imagePath = "/img/winter.jpg";
+	return new ImageIcon(getClass().getResource(imagePath));
+}
+
+/**
+ * Create a list of month in a form of Hashtable
+ * @return the hashtable that contain String names of month and the matching number
+ */
+public static Hashtable<String,Integer> makeMonthList()
+{
+	Hashtable<String,Integer> ht = new Hashtable<>();
+	ht.put("January", 1);
+	ht.put("February", 2);
+	ht.put("March", 3);
+	ht.put("April", 4);
+	ht.put("May", 5);
+	ht.put("June", 6);
+	ht.put("July", 7);
+	ht.put("August", 8);
+	ht.put("September", 9);
+	ht.put("October", 10);
+	ht.put("November", 11);
+	ht.put("December", 12);
+	return ht;
+}
+
+/**
+ * creates drop down menu(combo box) for year
+ * @return the ComboBox that identifies year
+ */
+public static JComboBox createYearBox()
+{
+	JComboBox yearBox = new JComboBox();
+	yearBox.setFont(new Font("Sanserif", Font.BOLD, 16));
+	int yearToAdd = 2017;
+	for(int i = 0; i < 20; i++)
+	{
+		yearBox.addItem(yearToAdd);
+		yearToAdd++;
+	}		
+	return yearBox;
+}
+/**
+* create drop down menu(combo box) for month
+* @return the combo box that has all the names of month
+*/
+public static JComboBox createMonthBox()
+{
+JComboBox monthBox = new JComboBox();
+monthBox.setFont(new Font("Sanserif", Font.BOLD, 16));
+String months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+for(int i = 0; i < 12; i++)
+{
+	monthBox.addItem(months[i]);
+}
+
+return monthBox;
+}
+
+/**
+* Color selection where provide users to be able to select their color of event text to differentiate the types of events.
+* @return the Combo box for color selection
+*/
+public static JComboBox createColorBox()
+{
+JComboBox colorBox = new JComboBox();
+colorBox.setFont(new Font("Sanserif", Font.BOLD, 16));
+colorBox.addItem("Red");
+colorBox.addItem("Blue");
+colorBox.addItem("Green");
+colorBox.addItem("Purple");
+colorBox.addItem("Brown");
+return colorBox;
+}
+
+/**
+* Create Time combo box use of start time and end time
+* @return the combo box has differnet time period from hour 1 - 12 with minutes 00, 15, 30 and 45
+*/
+public static JComboBox createTimeBox()
+{
+JComboBox timeBox = new JComboBox();
+String[] minutesList = {"00","15","30","45"};
+timeBox.setFont(new Font("Sanserif", Font.BOLD, 16));
+for(int i = 0; i <= 11; i++)
+{
+	for(int j = 0; j < 4; j++)
+	{
+		if(i == 0)
+		{
+			timeBox.addItem("12:" + minutesList[j]);
+		}
+		else
+		{
+			if(i < 10)
+				timeBox.addItem("0" + i + ":" + minutesList[j]);
+			else
+				timeBox.addItem(i + ":" + minutesList[j]);
+		}
+	}
+}
+return timeBox;
+}
+
 }
 
