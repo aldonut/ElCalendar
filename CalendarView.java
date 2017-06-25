@@ -9,6 +9,7 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
 /**
  * 
  * @author richard
@@ -28,6 +29,11 @@ public class CalendarView
 		m.addEvent(2017, 11, 23, 1200, 1145, "Thanksgiving", "A.M.", "P.M.", 0);
 		m.addEvent(2017, 12, 25, 1200, 1145, "Christmas", "A.M.", "P.M.", 0);
 		m.addEvent(2018, 1, 1, 1200, 1145, "New Year", "A.M.", "P.M.", 0);
+		calendarFrame = new JFrame("Calendar (MonthView)");
+		calendarFrame.setSize(1920, 1080);
+		//calendarFrame.pack();
+		
+		
 		calendarFrame = new JFrame("Calendar");
 		Dimension DimMax = Toolkit.getDefaultToolkit().getScreenSize();
 		calendarFrame.setSize(DimMax);
@@ -1098,7 +1104,8 @@ public class CalendarView
 				}		
 	
 				m.addEvent(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod, color);
-				
+				DB.insert(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod);
+
 
 				// Repaint the calendar after an event is added
 				eventFrame.dispose();		
@@ -1151,6 +1158,7 @@ public class CalendarView
 		eventFrame.setVisible(true);
 	}
 	
+
 	/**
 	 * Allows users to update event information by clicking a specific event
 	 * @param eventToUpdate the event users arae trying to update
