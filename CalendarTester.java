@@ -8,9 +8,10 @@ public class CalendarTester {
 public static void main(String[] args) 
 {
 	CalendarView cv = new CalendarView();
+	cv.themeFrame();
 //	cv.paintDayView();
 //	cv.paintAgendaView();
-	cv.paintMonthView();
+//	cv.paintMonthView();
 //	cv.createEventBox();
 }
 }

@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
@@ -18,6 +19,7 @@ public class CalendarView
 	public JFrame calendarFrame;
 	public boolean deleting = false;
 	private final Color[] colorList = {new Color(220,20,60), new Color(30,144,255), new Color(0,206,209), new Color(148,0,211), new Color(210,105,30)};
+	private String theme;
 	public CalendarView()
 	{
 		m = new Model();
@@ -26,12 +28,11 @@ public class CalendarView
 		m.addEvent(2017, 11, 23, 1200, 1145, "Thanksgiving", "A.M.", "P.M.", 0);
 		m.addEvent(2017, 12, 25, 1200, 1145, "Christmas", "A.M.", "P.M.", 0);
 		m.addEvent(2018, 1, 1, 1200, 1145, "New Year", "A.M.", "P.M.", 0);
-		calendarFrame = new JFrame("Calendar (MonthView)");
+		calendarFrame = new JFrame("Calendar");
 		Dimension DimMax = Toolkit.getDefaultToolkit().getScreenSize();
 		calendarFrame.setSize(DimMax);
 		calendarFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		
-		
+				
 		// Getting all available names for fonts in Java library
 //		String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 //
@@ -40,11 +41,96 @@ public class CalendarView
 //		}
 	}
 	
+	/**
+	 * Create a frame where users are able to select the theme of calendar
+	 */
+	public void themeFrame()
+	{
+		JFrame themeFrame = new JFrame("Theme");
+		themeFrame.setSize(600,700);
+		
+		JLabel chooseLabel = new JLabel("Please Choose one of the following themes to display your calendar: ");
+		chooseLabel.setFont(new Font("SansSerif", Font.BOLD, 26));
+		chooseLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JPanel buttonPanel = new JPanel();
+		FlowLayout fl = new FlowLayout();
+		fl.setHgap(50);
+		buttonPanel.setLayout(fl);
+		JButton theme1 = new JButton("Seasons");
+		JButton theme2 = new JButton("Black And White");
+		JButton theme3 = new JButton("Sunset");
+		JButton theme4 = new JButton("Plain And Simple");
+		Font buttonFont = new Font("SansSerif", Font.PLAIN, 22);
+		theme1.setFont(buttonFont);
+		theme2.setFont(buttonFont);
+		theme3.setFont(buttonFont);
+		theme4.setFont(buttonFont);
+		buttonPanel.add(theme1);
+		buttonPanel.add(theme2);
+		buttonPanel.add(theme3);
+		buttonPanel.add(theme4);
+		
+		theme1.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				theme = "Seasons";
+				setSeasonBackground(); 
+				paintMonthView();
+				themeFrame.dispose();
+			}
+		});
+		
+		theme2.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				theme = "Black And White";
+				calendarFrame.setContentPane(setBackground("/img/BlackAndWhite.jpg"));
+				paintMonthView();
+				themeFrame.dispose();
+			}			
+		});
+		
+		theme3.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				theme = "Sunset";
+				calendarFrame.setContentPane(setBackground("/img/Sunset.jpg"));
+				paintMonthView();
+				themeFrame.dispose();
+			
+			}
+			
+		});
+		
+		theme4.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				theme = "Plain And Simple";
+				paintMonthView();	
+				themeFrame.dispose();
+			}
+		});
+		
+		themeFrame.add(chooseLabel, BorderLayout.NORTH);
+		themeFrame.add(buttonPanel, BorderLayout.CENTER);
+		
+		themeFrame.pack();
+		themeFrame.setVisible(true);
+		themeFrame.setLocationRelativeTo(null);
+	}
+	
 	public Model getModel()
 	{
 		return m;
 	}
-	
+	/**
+	 * paint day view of calendar
+	 */
 	public void paintDayView()
 	{
 		String[] months = {"January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"};
@@ -62,16 +148,9 @@ public class CalendarView
 		
 		//Create last day and next day button so users can go over every day
 		JButton lastDayButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/last.png")).getImage()));
-		lastDayButton.setOpaque(false);
-		lastDayButton.setContentAreaFilled(false);
-		lastDayButton.setBorderPainted(false);
-		lastDayButton.setRolloverEnabled(true);
+		beautifyNextAndLastButton(lastDayButton);
 		JButton nextDayButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/next.png")).getImage()));
-		nextDayButton.setOpaque(false);
-		nextDayButton.setContentAreaFilled(false);
-		nextDayButton.setBorderPainted(false);
-		nextDayButton.setRolloverEnabled(true);
-		
+		beautifyNextAndLastButton(nextDayButton);		
 		lastDayButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -295,24 +374,19 @@ public class CalendarView
 		scrollPane.getViewport().setOpaque(false);
 		
 		
-		JLabel backgroundLabel = new JLabel();
-		Image img = getBackgroundimage().getImage().getScaledInstance(calendarFrame.getWidth(), calendarFrame.getHeight(), Image.SCALE_DEFAULT);
-		backgroundLabel.setIcon(new ImageIcon(img));
-		backgroundLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		
-		calendarFrame.setContentPane(backgroundLabel);
 
 		calendarFrame.setLayout(new BorderLayout());
 		calendarFrame.add(menuPanel, BorderLayout.NORTH);
 		calendarFrame.add(scrollPane,BorderLayout.CENTER);
-
 
 		calendarFrame.setVisible(true);
 		calendarFrame.setLocationRelativeTo(null);
 		calendarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	/**
+	 * paint agenda view of calendar
+	 */
 	public void paintAgendaView()
 	{
 		JFrame agendaFrame = new JFrame("Calendar (Agenda View)");
@@ -334,20 +408,6 @@ public class CalendarView
 			
 		agenda.setBackground(new Color(255,255,153));
 		agenda.setModel(model);
-		
-		//Color table with light Gray and white every other row.
-//		agenda.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
-//		{
-//			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-//		    {
-//		        final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-//		        if(row % 2 == 0)
-//		        	c.setBackground(new Color(240,240,240));
-//		        else
-//		        	c.setBackground(Color.WHITE);
-//		        return c;
-//		    }
-//		});
 		
 		//Make text in table cell align center
 		((DefaultTableCellRenderer)agenda.getDefaultRenderer(Object.class)).setHorizontalAlignment(JLabel.CENTER);
@@ -404,7 +464,9 @@ public class CalendarView
 		agendaFrame.add(scrollPane);		
 	}
 	
-	
+	/**
+	 * paint month view of calendar
+	 */
 	public void paintMonthView()
 	{		
 		String[] months = {"January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"};
@@ -432,6 +494,7 @@ public class CalendarView
 			strMonthLabel.setText(strRecentMonth.substring(0, 3) + ".");
 		}
 		
+		//Create look that record month number, month name and year
 		Box strMonthAndYear = Box.createVerticalBox();
 		yearLabel.setFont(new Font("Elephant", Font.BOLD, 30));
 		strMonthLabel.setFont(new Font("Elephant", Font.BOLD, 30));
@@ -444,33 +507,25 @@ public class CalendarView
 			intMonthLabel = new JLabel("0" + String.valueOf(intRecentMonth + 1));
 		else
 			intMonthLabel = new JLabel(String.valueOf(intRecentMonth + 1));
-
-
 		intMonthLabel.setFont(new Font("Elephant", Font.BOLD, 45));
 		
-		JPanel testPanel = new JPanel();
-		
+		JPanel timePanel = new JPanel();		
 		FlowLayout f = new FlowLayout();
 		f.setHgap(40);
-		testPanel.setLayout(f);
-		testPanel.add(intMonthLabel);
-		testPanel.add(strMonthAndYear);
-		strMonthAndYear.setFont(new Font("Elephant", Font.BOLD, 40));
-			
-//		JLabel monthAndYearLabel = new JLabel(strRecentYear + "  " + strRecentMonth);
-//		monthAndYearLabel.setFont(new Font("Elephant", Font.BOLD, 36));
 		
+		timePanel.setLayout(f);
+		timePanel.add(intMonthLabel);
+		timePanel.add(strMonthAndYear);
+		strMonthAndYear.setFont(new Font("Elephant", Font.BOLD, 40));
+				
 		//Make last and next Month button with images
 		JButton lastMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/last.png")).getImage()));
-		lastMonthButton.setOpaque(false);
-		lastMonthButton.setContentAreaFilled(false);
-		lastMonthButton.setBorderPainted(false);
-		lastMonthButton.setRolloverEnabled(true);
+		beautifyNextAndLastButton(lastMonthButton);
 		JButton nextMonthButton = new JButton(new ImageIcon(new ImageIcon(this.getClass().getResource("/img/next.png")).getImage()));
-		nextMonthButton.setOpaque(false);
-		nextMonthButton.setContentAreaFilled(false);
-		nextMonthButton.setBorderPainted(false);
-		nextMonthButton.setRolloverEnabled(true);
+		beautifyNextAndLastButton(nextMonthButton);	
+		lastAndNextPanel.add(lastMonthButton);
+		lastAndNextPanel.add(nextMonthButton);
+		
 		lastMonthButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -530,57 +585,10 @@ public class CalendarView
 				paintAgendaView();
 			}
 		});
-		
-
-		
-		
-		lastAndNextPanel.add(lastMonthButton);
-		lastAndNextPanel.add(nextMonthButton);
-
-		//Arrange different components in monthAndYearPanel (The top panel of the frame)
-		lastAndNextPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		tabPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		
-		BorderLayout bl = new BorderLayout();
-//		bl.setHgap(30);
-		monthAndYearPanel.setLayout(bl);
-		
-//		monthAndYearPanel.setPreferredSize(new Dimension(1900,150));
-		
-		monthAndYearPanel.add(lastAndNextPanel,BorderLayout.WEST);
-		monthAndYearPanel.add(testPanel,BorderLayout.NORTH);
-		monthAndYearPanel.add(tabPanel, BorderLayout.EAST);
-		
-		
-		
-		lastAndNextPanel.setOpaque(false);
-		testPanel.setOpaque(false);
-		tabPanel.setOpaque(false);
-
-		
-		
-		
-		//Paint the weekDay of the calendar
-		String[] weekDay = {"Sunday", "Monday", "Tuesday", "Wednesday",  "Thursday", "     Friday" , "        Saturday"};
-		for(int i = 0; i < weekDay.length; i++)
-		{
-			JLabel weekDayLabel = new JLabel(weekDay[i]);
-			FlowLayout fl = new FlowLayout();
-			fl.setAlignment(FlowLayout.CENTER);
-			fl.setHgap(140);
-			weekDayPanel.setLayout(fl);
-			weekDayLabel.setFont(new Font("Elephant", Font.PLAIN, 24));
-			weekDayPanel.add(weekDayLabel);
-		}
-				
-		Font buttonFont = new Font("Comic Sans MS", Font.BOLD, 20);
-		
+	
 		// Make "Create" button and connect it to functional "create" method
-		Image createImg = new ImageIcon(this.getClass().getResource("/img/create.png")).getImage();
-		JButton createButton = new JButton("Create", new ImageIcon(createImg));
-		createButton.setForeground(Color.WHITE);
-		createButton.setBackground(Color.GRAY);
-		createButton.setFont(buttonFont);;
+		JButton createButton = beautifyButton("Create", "/img/create.png");
+		createButton.setPreferredSize(d);
 		createButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -589,38 +597,63 @@ public class CalendarView
 			}
 		});
 		
+		//Arrange different components in monthAndYearPanel (The top panel of the frame)
+		lastAndNextPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		tabPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		
+		BorderLayout bl = new BorderLayout();
+		monthAndYearPanel.setLayout(bl);		
+		monthAndYearPanel.add(lastAndNextPanel,BorderLayout.WEST);
+		monthAndYearPanel.add(timePanel,BorderLayout.NORTH);
+		monthAndYearPanel.add(tabPanel, BorderLayout.EAST);
+					
+		lastAndNextPanel.setOpaque(false);
+		timePanel.setOpaque(false);
+		tabPanel.setOpaque(false);
+		
+		//Paint the weekDay of the calendar
+		String[] weekDay = {"Sunday", "Monday", "Tuesday", "Wednesday",  "Thursday", "Friday" , "Saturday"};
+		for(int i = 0; i < weekDay.length; i++)
+		{
+			JLabel weekDayLabel = new JLabel(weekDay[i]);
+			FlowLayout fl = new FlowLayout();
+			fl.setAlignment(FlowLayout.CENTER);
+			fl.setHgap(160);
+			weekDayPanel.setLayout(fl);
+			weekDayLabel.setFont(new Font("Elephant", Font.PLAIN, 24));
+			weekDayPanel.add(weekDayLabel);
+		}
+	
 		//Add every button in tabPanel
 		tabPanel.add(createButton);
 		tabPanel.add(todayButton);
 		tabPanel.add(dayView);
 		tabPanel.add(agendaButton);
 		
-		monthAndYearPanel.setMaximumSize(new Dimension(1800,500));
 		Box box = Box.createVerticalBox();
 		monthAndYearPanel.setOpaque(false);
 		weekDayPanel.setOpaque(false);
 		box.add(monthAndYearPanel);
 		box.add(weekDayPanel);
 		box.setOpaque(false);
-		
-		
-		JLabel backgroundLabel = new JLabel();
-		Image img = getBackgroundimage().getImage().getScaledInstance(calendarFrame.getWidth(), calendarFrame.getHeight(), Image.SCALE_DEFAULT);
-		backgroundLabel.setIcon(new ImageIcon(img));
-		backgroundLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		
-		calendarFrame.setContentPane(backgroundLabel);
+		if(theme.equals("Seasons"))
+		{	
+			setSeasonBackground();
+		}
+
 		calendarFrame.setLayout(new BorderLayout());
 		calendarFrame.add(box, BorderLayout.NORTH);
 		calendarFrame.add(daysPanel, BorderLayout.CENTER);
-
 
 		calendarFrame.setLocationRelativeTo(null);
 		calendarFrame.setVisible(true);
 		calendarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	/**
+	 * create a panel and paint day buttons in calendar month view
+	 * @return the panel with painted day buttons
+	 */
 	public JPanel paintDays()
 	{
 		JPanel daysPanel = new JPanel();
@@ -647,46 +680,51 @@ public class CalendarView
 				daysPanel.add(b0);
 			}
 			else
-			{
-//				JButton dayButton = new JButton();
-				
-				
-				//Try painting background of day button in gradient color
-//				JGradientColor dayButton = new JGradientColor();
-//				JLabel dayLabel = new JLabel(String.valueOf(day));
-				
-				JButton dayButton = new JButton();
+			{				
+				JButton dayButton = new JButton();				
 				JLabel dayLabel = new JLabel(String.valueOf(day));
-				
-				
 				dayLabel.setFont(new Font("Cooper Black", Font.PLAIN, 36));
+				if(theme.equals("Black And White"))
+				{
+					JGradientColor gradientButton = new JGradientColor(Color.BLACK, Color.WHITE);
+					dayButton = gradientButton;
+					dayLabel.setForeground(Color.WHITE);
+					dayButton.setOpaque(true);
+					daysPanel.setOpaque(true);
+					dayButton.setContentAreaFilled(false);
+				}
 				
-				// Change the color of day in calendar according to specified seasons
-				int recentMonth = m.getMovedAroundCal().get(Calendar.MONTH) + 1;
-				boolean isSpring = recentMonth >= 3 && recentMonth <= 5;
-				boolean isSummer = recentMonth >= 6 && recentMonth <= 8;
-				boolean isFall = recentMonth >= 9 && recentMonth <= 11;
+				else if(theme.equals("Sunset"))
+				{
+						JGradientColor gradientButton = new JGradientColor(new Color(255, 126, 95), new Color(254, 180, 123));
+						dayButton = gradientButton;
+						dayLabel.setForeground(Color.WHITE);
+						dayButton.setOpaque(true);
+						daysPanel.setOpaque(true);
+						dayButton.setContentAreaFilled(false);
+				}
 				
-				if(isSpring)
-					dayLabel.setForeground(new Color(160,82,45));
-				else if(isSummer)
-					dayLabel.setForeground(new Color(205,133,63));
-				else if(isFall)
-					dayLabel.setForeground(new Color(255,69,0));
-				else
-					dayLabel.setForeground(new Color(105,105,105));
+				else if(theme.equals("Seasons"))
+				{
+					// Change the color of day in calendar according to specified seasons
+					int recentMonth = m.getMovedAroundCal().get(Calendar.MONTH) + 1;
+					boolean isSpring = recentMonth >= 3 && recentMonth <= 5;
+					boolean isSummer = recentMonth >= 6 && recentMonth <= 8;
+					boolean isFall = recentMonth >= 9 && recentMonth <= 11;					
+					if(isSpring)
+						dayLabel.setForeground(new Color(160,82,45));
+					else if(isSummer)
+						dayLabel.setForeground(new Color(205,133,63));
+					else if(isFall)
+						dayLabel.setForeground(new Color(255,69,0));
+					else
+						dayLabel.setForeground(new Color(105,105,105));
+				}
 				
-				
-				
-				
-//				dayLabel.setOpaque(true);
-//				dayLabel.setBackground(new Color(211,211,211));
-
 				dayButton.setLayout(new BorderLayout());
 				dayButton.add(dayLabel, BorderLayout.NORTH);
 				
-				//Check condition for Holiday
-				
+				//Check condition for Holiday				
 				JPanel textAndImagePanel = new JPanel();
 				
 				boolean isToday = day == m.getLocalCal().get(Calendar.DAY_OF_MONTH) && m.getLocalCal().get(Calendar.MONTH) == m.getMovedAroundCal().get(Calendar.MONTH) &&m.getLocalCal().get(Calendar.YEAR) == m.getMovedAroundCal().get(Calendar.YEAR);
@@ -741,9 +779,7 @@ public class CalendarView
 					dayButton.setBorder(BorderFactory.createLineBorder(Color.RED, 10, true));
 					dayLabel.setForeground(Color.WHITE);
 				}
-				
-
-				
+							
 				int numOfAllEvents = m.getDaysArr().size();
 				int previewCount = 0;
 
@@ -796,10 +832,12 @@ public class CalendarView
 					}
 				}
 				Dimension sizeOfButton = new Dimension(250,130);
-				dayButton.setPreferredSize(sizeOfButton);
-				daysPanel.add(dayButton);
 				dayButton.setOpaque(false);
 				daysPanel.setOpaque(false);
+				dayButton.setPreferredSize(sizeOfButton);
+
+				
+				daysPanel.add(dayButton);
 				day++;
 				dayButton.addActionListener(new ActionListener()
 				{
@@ -814,7 +852,9 @@ public class CalendarView
 		}	
 		return daysPanel;
 	}
-	
+	/**
+	 * Make event box that allows users to enter basic information about an event and add it to database
+	 */
 	public void createEventBox()
 	{
 		Hashtable<String, Integer> monthList = makeMonthList();
@@ -1111,7 +1151,10 @@ public class CalendarView
 		eventFrame.setVisible(true);
 	}
 	
-	
+	/**
+	 * Allows users to update event information by clicking a specific event
+	 * @param eventToUpdate the event users arae trying to update
+	 */
 	public void updateEvent(Event eventToUpdate)
 	{
 		Hashtable<String, Integer> monthList = makeMonthList();
@@ -1127,16 +1170,16 @@ public class CalendarView
 		JPanel colorPanel = new JPanel();
 		
 		//implement box layout
-		Box box = Box.createVerticalBox();
+		Box box = Box.createVerticalBox();		
 		
 		
-		JLabel descLabel = new JLabel("Description: ");
-		descLabel.setFont(labelFont);
 		
 		//add labels and set its fonts.
+		JLabel descLabel = new JLabel("Description: ");
 		JLabel dateLabel = new JLabel("Date: ");
 		JLabel startTimeLabel = new JLabel("Start Time:");
 		JLabel endTimeLabel = new JLabel("End Time: ");
+		descLabel.setFont(labelFont);
 		dateLabel.setFont(labelFont);
 		startTimeLabel.setFont(labelFont);
 		endTimeLabel.setFont(labelFont);
@@ -1421,7 +1464,12 @@ public class CalendarView
 	}
 	
 		
-
+/**
+ * modifies functional buttons' look by importing images and settting their background and foreground
+ * @param buttonName the button that is trying to be modified
+ * @param path the path where the image can be found
+ * @return the button that has been already beautified
+ */
 public JButton beautifyButton(String buttonName, String path)
 {
 	Image Img = new ImageIcon(this.getClass().getResource(path)).getImage();
@@ -1432,6 +1480,13 @@ public JButton beautifyButton(String buttonName, String path)
 	return button;
 }
 
+/**
+ * mark holiday by adding the small icon beside the specific day
+ * @param textAndImagePanel the panel that all components are being added into
+ * @param dayLabel the number of the day
+ * @param imgLabel the label with image
+ * @param dayButton the button that contains dayLabel and imgLabel
+ */
 public void markHolidy(JPanel textAndImagePanel, JLabel dayLabel, JLabel imgLabel, JButton dayButton)
 {
 	textAndImagePanel.add(dayLabel);
@@ -1441,11 +1496,13 @@ public void markHolidy(JPanel textAndImagePanel, JLabel dayLabel, JLabel imgLabe
 	dayButton.add(textAndImagePanel, BorderLayout.NORTH);
 	dayButton.setContentAreaFilled(false);
 }
-
+/**
+ * get the background Image according to months
+ * @return the image that is selected based on the months
+ */
 public ImageIcon getBackgroundimage()
 {
-	String imagePath = "";
-	
+	String imagePath = "";	
 	int month = m.getMovedAroundCal().get(Calendar.MONTH) + 1;
 	if(month <= 8 && month >= 6)
 		imagePath = "/img/summer.jpg";
@@ -1558,5 +1615,34 @@ for(int i = 0; i <= 11; i++)
 return timeBox;
 }
 
+public void beautifyNextAndLastButton(JButton button)
+{
+	button.setOpaque(false);
+	button.setContentAreaFilled(false);
+	button.setBorderPainted(false);
+	button.setRolloverEnabled(true);
+}
+/**
+ * return JLabel background according to the given path
+ * @param path the image path where the image is
+ * @return the JLabel with image
+ */
+public JLabel setBackground(String path)
+{
+	JLabel backgroundLabel = new JLabel();
+	Image img = new ImageIcon(getClass().getResource(path)).getImage().getScaledInstance(calendarFrame.getWidth(), calendarFrame.getHeight(), Image.SCALE_DEFAULT);
+	backgroundLabel.setIcon(new ImageIcon(img));
+	backgroundLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	return backgroundLabel;
+}
+
+public void setSeasonBackground()
+{
+	JLabel backgroundLabel = new JLabel();
+	Image img = getBackgroundimage().getImage().getScaledInstance(calendarFrame.getWidth(), calendarFrame.getHeight(), Image.SCALE_DEFAULT);
+	backgroundLabel.setIcon(new ImageIcon(img));
+	backgroundLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	calendarFrame.setContentPane(backgroundLabel);
+}
 }
 
