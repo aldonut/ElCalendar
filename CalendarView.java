@@ -1,26 +1,24 @@
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.table.*;
 
 /**
  * 
  * @author richard
  */
-public class CalendarView
+public class CalendarView extends JFrame
 {
 	public Model m;
 	public JFrame calendarFrame;
 	public boolean deleting = false;
 	private final Color[] colorList = {new Color(220,20,60), new Color(30,144,255), new Color(0,206,209), new Color(148,0,211), new Color(210,105,30)};
 	private String theme;
+	public boolean clickHighlighted;
 	public CalendarView()
 	{
 		m = new Model();
@@ -29,22 +27,10 @@ public class CalendarView
 		m.addEvent(2017, 11, 23, 1200, 1145, "Thanksgiving", "A.M.", "P.M.", 0);
 		m.addEvent(2017, 12, 25, 1200, 1145, "Christmas", "A.M.", "P.M.", 0);
 		m.addEvent(2018, 1, 1, 1200, 1145, "New Year", "A.M.", "P.M.", 0);
-		calendarFrame = new JFrame("Calendar (MonthView)");
-		calendarFrame.setSize(1920, 1080);
-		//calendarFrame.pack();
-		
 		
 		calendarFrame = new JFrame("Calendar");
 		Dimension DimMax = Toolkit.getDefaultToolkit().getScreenSize();
 		calendarFrame.setSize(DimMax);
-		calendarFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-				
-		// Getting all available names for fonts in Java library
-//		String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-//
-//		for (int i = 0; i < fonts.length; i++) {
-//		    System.out.println(fonts[i]);
-//		}
 	}
 	
 	/**
@@ -106,10 +92,8 @@ public class CalendarView
 				theme = "Sunset";
 				calendarFrame.setContentPane(setBackground("/img/Sunset.jpg"));
 				paintMonthView();
-				themeFrame.dispose();
-			
-			}
-			
+				themeFrame.dispose();	
+			}			
 		});
 		
 		theme4.addActionListener(new ActionListener()
@@ -317,7 +301,7 @@ public class CalendarView
 				{
 					if(hasNoEventBlock && numOfNoEventBlock < 1)
 					{
-						Block noEventblock = new Block(false,0,40,1400,800,"No Event Has Scheduled Yet", "", new Color(255, 128, 8));
+						Block noEventblock = new Block(false,0,40,1400,800,"No Event Has Been Scheduled Yet", "", new Color(255, 128, 8));
 						noEventblock.setMaximumSize(new Dimension(1400, 850));
 						box.add(noEventblock);
 						hasNoEventBlock = true;
@@ -368,7 +352,6 @@ public class CalendarView
 				}
 			}
 		}
-
 		
 		buttonPanel.add(deleteButton);
 		contentPanel.setLayout(new BorderLayout());
@@ -642,15 +625,19 @@ public class CalendarView
 		box.add(monthAndYearPanel);
 		box.add(weekDayPanel);
 		box.setOpaque(false);
+		
 		if(theme.equals("Seasons"))
-		{	
 			setSeasonBackground();
+		if(theme.equals("Sunset"))
+		{
+			intMonthLabel.setForeground(Color.WHITE);
+			strMonthLabel.setForeground(Color.WHITE);
+			yearLabel.setForeground(Color.WHITE);
 		}
-
 		calendarFrame.setLayout(new BorderLayout());
 		calendarFrame.add(box, BorderLayout.NORTH);
 		calendarFrame.add(daysPanel, BorderLayout.CENTER);
-
+		
 		calendarFrame.setLocationRelativeTo(null);
 		calendarFrame.setVisible(true);
 		calendarFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -739,6 +726,8 @@ public class CalendarView
 				boolean isChristmas = m.getMovedAroundCal().get(Calendar.MONTH) == 11 && day == 25;
 				boolean isDayLightSaving = m.getMovedAroundCal().get(Calendar.MONTH) == 10 && day == 5;
 				boolean isNewYear = m.getMovedAroundCal().get(Calendar.MONTH) == 0 && day == 1;
+				boolean dayClicked = day == m.getMovedAroundCal().get(Calendar.DAY_OF_MONTH);
+
 				
 				dayButton.setOpaque(false);
 				dayButton.setContentAreaFilled(false);
@@ -785,10 +774,17 @@ public class CalendarView
 					dayButton.setBorder(BorderFactory.createLineBorder(Color.RED, 10, true));
 					dayLabel.setForeground(Color.WHITE);
 				}
+				
+				// If the day is click and it is not today, it will be highlighted.
+				// When today's date is clicked, it won't do anything
+				if(dayClicked && !isToday)
+				{
+					dayButton.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 8, true));
+					dayLabel.setForeground(Color.WHITE);
+				}
 							
 				int numOfAllEvents = m.getDaysArr().size();
 				int previewCount = 0;
-
 				if(numOfAllEvents > 0)
 				{
 					 Box box = Box.createVerticalBox();
@@ -801,9 +797,9 @@ public class CalendarView
 
 							for(int j = 0; j < m.getDaysArr().get(i).getEventsArr().size(); j++)
 							{
-								// if there are over 3 event in a day, event preview features in month view will only show up to 3,
+								// if there are over 2 event in a day, event preview features in month view will only show up to 3,
 								// and users can click into that day into day view to discover more events.
-								if(previewCount < 3)
+								if(previewCount < 2)
 								{
 									EventPreviewMark mark = new EventPreviewMark(m.getDaysArr().get(i).getEventsArr().get(j));
 									mark.setText((m.getDaysArr().get(i).getEventsArr().get(j).getDescription()));
@@ -841,17 +837,22 @@ public class CalendarView
 				dayButton.setOpaque(false);
 				daysPanel.setOpaque(false);
 				dayButton.setPreferredSize(sizeOfButton);
-
 				
 				daysPanel.add(dayButton);
 				day++;
-				dayButton.addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e) 
+				
+				//day button will be highlighted if it is clicked once.
+				// If it is double-clicked, it will go to the day in day view.
+				dayButton.addMouseListener(new MouseAdaptor(){
+					@Override
+					public void mouseClicked(MouseEvent e) 
 					{
 						m.getMovedAroundCal().set(Calendar.DAY_OF_MONTH, Integer.valueOf(dayLabel.getText()));
 						calendarFrame.getContentPane().removeAll();
-						paintDayView();
+						if(e.getClickCount() == 2)		
+							paintDayView();
+						else
+							paintMonthView();		
 					}
 				});
 			}
@@ -1652,5 +1653,6 @@ public void setSeasonBackground()
 	backgroundLabel.setHorizontalAlignment(SwingConstants.CENTER);
 	calendarFrame.setContentPane(backgroundLabel);
 }
+
 }
 

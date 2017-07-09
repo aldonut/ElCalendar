@@ -48,6 +48,7 @@ public class Event implements Comparable<Event>
 		this.color = color;
 	}
 	
+
     /**
 	 * compares events by start time 
 	 * if same then compares by end time

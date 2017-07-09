@@ -1,3 +1,4 @@
+
 import java.sql.*;
 
 public class DB
@@ -10,7 +11,7 @@ public class DB
 
 
                Connection myConn = DriverManager.getConnection(
-			    "jdbc:mysql://localhost:3306/calendar", "root", "chodo");
+			    "jdbc:mysql://localhost:3306/calendar", "root", "calendar");
 
 		Statement instertStmt = myConn.createStatement();
 
@@ -29,7 +30,6 @@ public class DB
 					"'" + description + "'," +
 					"'" + startTod + "'," +
 					"'" + endTod + "'" +
-
 
 					 ")";
 			

@@ -321,7 +321,5 @@ public class Model
 	{
 		cellDays[x][y] = day;
 	}
-
-	
 }
 
