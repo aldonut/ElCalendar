@@ -1103,9 +1103,15 @@ public class CalendarView extends JFrame
 					errorFrame.setVisible(true);
 					return;
 				}		
+
+				
+
 	
-				m.addEvent(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod, color);
-				DB.insert(year, intMonth, day, intStartTime,intEndTime, description, startTod, endTod);
+				m.addEvent(year, intMonth, day, intStartTime,intEndTime, 
+					description, startTod, endTod, color);
+
+				DB.insert(year, intMonth, day, intStartTime,intEndTime, 
+					description, startTod, endTod, color);
 
 
 				// Repaint the calendar after an event is added

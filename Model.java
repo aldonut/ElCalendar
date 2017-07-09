@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -172,9 +171,11 @@ public class Model
 	 * @throws IOException throws parseExceptions
 	 */
 	
-	public void addEvent(int year, int month, int day, int startTime, int endTime, String description, String startTod, String endTod, int color)
+	public void addEvent(int year, int month, int day, int startTime, int endTime, 
+		String description, String startTod, String endTod, int color)
 	{
-		Event eventToAdd = new Event(year, month, day, startTime, endTime, description, startTod, endTod, color);
+		Event eventToAdd = new Event(year, month, day, startTime, endTime, 
+			description, startTod, endTod, color);
 		String eventDate = eventToAdd.getStrDate();
 		Day eventDay = null;
 		if(dayAlreadyExists(eventDate))
@@ -203,39 +204,8 @@ public class Model
 	 */
 	public void delete(Event e)
 	{
-		for(int i  = 0; i < getDaysArr().size(); i++)
-		{
-			for(int j = 0; j < getDaysArr().get(i).getEventsArr().size(); j++)
-			{
-				if(getDaysArr().get(i).getEventsArr().get(j).equals(e))
-				{
-					getDaysArr().get(i).getEventsArr().remove(e);
-				}
-			}
-		}
-		
-		for(int i  = 0; i < getDaysArr().size(); i++)
-		{
-			for(int j = 0; j < getDaysArr().get(i).getEventsArr().size(); j++)
-			{
-				System.out.println( getDaysArr().get(i).getEventsArr().get(j));
-			}
-		}
+		DB.delete(e);
 	}
-//			String date = input;
-//			
-//			for(int i = 0; i < dayCount; i++)
-//			{
-//				if(usedDays.get(i).getDate().equals(date))
-//				{
-//					usedDays.remove(i);
-//					dayCount--;
-//				}
-//			}
-		
-		
-		
-	
 	
 	/**
 	 * 
