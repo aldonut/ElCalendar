@@ -113,9 +113,6 @@ public class DB
 			year + " and month = " + month);
 
 
-					System.out.println("\n\n\n\n" + myRs + "\n\n\n");
-
-
 		monthEvents = createEvents(myRs);
 
 		}
@@ -125,8 +122,30 @@ public class DB
 
 		return monthEvents;
 
+	}
+
+	public static ArrayList<Event> loadDay(int year, int month, int day)
+	{
+		ArrayList<Event> dayEvents = null;
+		try{
+		//connect
+		Connection myConn = DriverManager.getConnection(
+		      "jdbc:mysql://localhost:3306/calendar", "root", "chodo");
+
+		Statement loadDay = myConn.createStatement();
+
+		ResultSet myRs = loadDay.executeQuery("select * from events where year = " +
+			year + " and month = " + month + " and day = " + day);
 
 
+		dayEvents = createEvents(myRs);
+
+		}
+
+		catch (Exception e) {System.out.println(e);}
+
+		System.out.println("dayyyyyyy");
+		return dayEvents;
 	}
 
 	public static ArrayList<Event> createEvents(ResultSet myRs)
@@ -139,7 +158,6 @@ public class DB
 			while (myRs.next())
 				{
 					
-			System.out.println("\n\n\n\n here \n\n\n");
 				
 		int year = Integer.parseInt(myRs.getString("year"));
 		int month = Integer.parseInt(myRs.getString("month"));

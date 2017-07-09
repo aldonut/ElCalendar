@@ -11,7 +11,7 @@ public static void main(String[] args)
 	//CalendarView cv = new CalendarView();
 	//cv.themeFrame();
 	
-	ArrayList<Event> all = new ArrayList(DB.loadMonth(2017, 6));
+	ArrayList<Event> all = new ArrayList(DB.loadDay(2017, 6, 30));
 
 	for(int i = 0; i < all.size(); i++)
 	{
