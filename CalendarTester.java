@@ -3,14 +3,21 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class CalendarTester {
 public static void main(String[] args) 
 {
-	CalendarView cv = new CalendarView();
-	cv.themeFrame();
-	Event e = new Event(2017, 6, 30, 1200, 1200, "sdfsd", "P.M.", "P.M.",0);
-	DB.delete(e);
+	//CalendarView cv = new CalendarView();
+	//cv.themeFrame();
+	
+	ArrayList<Event> all = new ArrayList(DB.loadAll());
+
+	for(int i = 0; i < all.size(); i++)
+	{
+		System.out.println(all.get(i).toString());
+	}
+	
 //	cv.paintDayView();
 //	cv.paintAgendaView();
 //	cv.paintMonthView();

@@ -202,9 +202,9 @@ public class Model
 	 * deletes either a certain day's events 
 	 * all the days 
 	 */
-	public void delete(String id)
+	public void delete(Event e)
 	{
-		DB.delete(id);
+		DB.delete(e);
 	}
 	
 	/**

@@ -1110,7 +1110,7 @@ public class CalendarView
 					description, startTod, endTod, color);
 
 				DB.insert(year, intMonth, day, intStartTime,intEndTime, 
-					description, startTod, endTod);
+					description, startTod, endTod, color);
 
 
 				// Repaint the calendar after an event is added
