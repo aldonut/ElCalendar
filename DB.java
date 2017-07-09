@@ -75,7 +75,8 @@ public class DB
 
 	public static ArrayList<Event> loadAll()
 	{
-		ArrayList<Event> allEvents = new ArrayList();
+
+		ArrayList<Event> allEvents = null;
 
 		try{
 				//connect
@@ -86,32 +87,79 @@ public class DB
 				Statement loadAll = myConn.createStatement();
 
 				ResultSet myRs = loadAll.executeQuery("select * from events");
-				while (myRs.next())
-				{
-
-					int year = Integer.parseInt(myRs.getString("year"));
-					int month = Integer.parseInt(myRs.getString("month"));
-					int day = Integer.parseInt(myRs.getString("day"));
-					int startTime = Integer.parseInt(myRs.getString("startTime"));
-					int endTime = Integer.parseInt(myRs.getString("endTime"));
-					String description = myRs.getString("description");
-					String startTod = myRs.getString("startTod");
-					String endTod = myRs.getString("endTod");
 					
-					int color = Integer.parseInt(myRs.getString("color"));
 
-					Event newEvent = new Event(year, month, day, startTime,
-						endTime, description, startTod, endTod, color);
-
-					allEvents.add(newEvent);
-			
-				}
+					allEvents = createEvents(myRs);
 
 				
 			}
 			catch (Exception e) {System.out.println(e);}
 
 
-				return allEvents;
+				return 	allEvents;
+	}
+
+	public static ArrayList<Event> loadMonth(int year, int month)
+	{
+		ArrayList<Event> monthEvents = null;
+		try{
+		//connect
+		Connection myConn = DriverManager.getConnection(
+		      "jdbc:mysql://localhost:3306/calendar", "root", "chodo");
+
+		Statement loadMonth = myConn.createStatement();
+
+		ResultSet myRs = loadMonth.executeQuery("select * from events where year = " +
+			year + " and month = " + month);
+
+
+					System.out.println("\n\n\n\n" + myRs + "\n\n\n");
+
+
+		monthEvents = createEvents(myRs);
+
+		}
+
+		catch (Exception e) {System.out.println(e);}
+
+
+		return monthEvents;
+
+
+
+	}
+
+	public static ArrayList<Event> createEvents(ResultSet myRs)
+	{
+		Event newEvent = null;
+		ArrayList<Event> eventsList = new ArrayList();
+
+		try
+		{
+			while (myRs.next())
+				{
+					
+			System.out.println("\n\n\n\n here \n\n\n");
+				
+		int year = Integer.parseInt(myRs.getString("year"));
+		int month = Integer.parseInt(myRs.getString("month"));
+		int day = Integer.parseInt(myRs.getString("day"));
+		int startTime = Integer.parseInt(myRs.getString("startTime"));
+		int endTime = Integer.parseInt(myRs.getString("endTime"));
+		String description = myRs.getString("description");
+		String startTod = myRs.getString("startTod");
+		String endTod = myRs.getString("endTod");
+		int color = Integer.parseInt(myRs.getString("color"));
+
+		newEvent = new Event(year, month, day, startTime,
+						endTime, description, startTod, endTod, color);
+
+		eventsList.add(newEvent);
+		}
+		}
+		catch (Exception e) {System.out.println(e);}
+
+
+		return eventsList;
 	}
 }
