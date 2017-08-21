@@ -166,7 +166,6 @@ public class Model
 	
 	/**
 	 * 
-	 * @param in the scanner being used 
 	 * @throws ParseException throws parseExpection
 	 * @throws IOException throws parseExceptions
 	 */

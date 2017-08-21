@@ -16,7 +16,8 @@ public class CalendarView extends JFrame
 	public Model m;
 	public JFrame calendarFrame;
 	public boolean deleting = false;
-	private final Color[] colorList = {new Color(220,20,60), new Color(30,144,255), new Color(0,206,209), new Color(148,0,211), new Color(210,105,30)};
+	private final Color[] colorList = {new Color(220,20,60), new Color(30,144,255), 
+		new Color(0,206,209), new Color(148,0,211), new Color(210,105,30)};
 	private String theme;
 	public boolean clickHighlighted;
 	public CalendarView()
@@ -123,7 +124,8 @@ public class CalendarView extends JFrame
 	 */
 	public void paintDayView()
 	{
-		String[] months = {"January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"};
+		String[] months = {"January", "February", "March", "April","May", "June", "July",
+		 "August", "September", "October", "November", "December"};
 		JPanel menuPanel = new JPanel();
 		JPanel timePanel = new JPanel();
 		JPanel lastAndNextPanel = new JPanel();
@@ -767,6 +769,7 @@ public class CalendarView extends JFrame
 					markHolidy(textAndImagePanel, dayLabel, imgLabel, dayButton);
 				}
 				
+
 				
 				//Find and highlight today's date
 				if(isToday)

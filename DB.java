@@ -4,16 +4,14 @@ import java.util.ArrayList;
 
 public class DB
 {
-	public static int idCount = 5; 
 
 	public static void insert(int year, int month, int day, 
 		int startTime, int endTime, String description, String startTod, String endTod, int color)
 	{
-
 		try{
 
                Connection myConn = DriverManager.getConnection(
-			    "jdbc:mysql://localhost:3306/calendar", "root", "calendar");
+			    "jdbc:mysql://localhost:3306/calendar?autoReconnect=true&useSSL=false", "root", "chodo");
 
 		Statement instertStmt = myConn.createStatement();
 
@@ -21,20 +19,15 @@ public class DB
 					+ "(year, month, day, startTime, endTime," + 
 					" description, startTod, endTod, color)"
 					+ "values(" + 
-					"'" + year + "'," +
-					"'" + month + "'," +
-					"'" + day + "'," +
-					"'" + startTime + "'," +
-					"'" + endTime + "'," +
+					"'" + year        + "'," +
+					"'" + month       + "'," +
+					"'" + day         + "'," +
+					"'" + startTime   + "'," +
+					"'" + endTime     + "'," +
 					"'" + description + "'," +
-					"'" + startTod + "'," +
-<<<<<<< HEAD
-					"'" + endTod + "'" +
-
-=======
-					"'" + endTod + "'," +
-					"'" + color + "'" +
->>>>>>> 5a83ffa54d2f778345508a9c6b522636cdb3e23d
+					"'" + startTod    + "'," +
+					"'" + endTod      + "'," +
+					"'" + color       + "'" +
 					 ")";
 			
 			instertStmt.executeUpdate(event);
@@ -150,7 +143,6 @@ public class DB
 
 		catch (Exception e) {System.out.println(e);}
 
-		System.out.println("dayyyyyyy");
 		return dayEvents;
 	}
 
@@ -185,5 +177,10 @@ public class DB
 
 
 		return eventsList;
+	}
+
+	public static void update()
+	{
+		
 	}
 }
